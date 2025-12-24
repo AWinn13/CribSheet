@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.CurrentBabyPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             Title="CurrentBabyPage"
+             x:DataType="viewModels:CurrentBabyViewModel">
+    <VerticalStackLayout>
+    <Label Text="{Binding CurrentBaby.Name}"
+           FontSize="Large"
+           FontAttributes="Bold"
+           HorizontalOptions="Center"
+           Margin="0,20,0,10" />
+    <CollectionView ItemsSource="{Binding FeedingRecords}"
+                    EmptyView="No feedings recorded yet">
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:FeedingRecord">
+          <Border Margin="10"
+                  Padding="10">
+            <VerticalStackLayout>
+              <Label Text="{Binding FeedingTime , StringFormat='Feeding Time: {0:MMMM d, yyyy h:mm tt}'}"
+                     FontAttributes="Bold"
+                     FontSize="Medium" />
+              <Label Text="{Binding Amount, StringFormat='Amount: {0} oz'}" />
+            </VerticalStackLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+    <CollectionView ItemsSource="{Binding SleepRecords}"
+                    EmptyView="No diapers recorded yet">
+      <CollectionView.ItemTemplate>
+        <DataTemplate>
+          
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

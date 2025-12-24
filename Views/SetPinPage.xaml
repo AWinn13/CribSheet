@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.SetPinPage"
+             Title="SetPinPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewModels:SetPinViewModel">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <VerticalStackLayout HorizontalOptions="Center"
+                       VerticalOptions="Center">
+    <Grid MaximumWidthRequest="500"
+          RowDefinitions="*,*"
+          ColumnDefinitions="*"
+          RowSpacing="10"
+          Padding="15"
+          IsVisible="{Binding ShowPinSetup, Converter={StaticResource InvertedBoolConverter}}">
+      <Label Grid.Row="0"
+             HorizontalOptions="Center"
+             Text="For added security, would you like to create a PIN?" />
+      <FlexLayout Grid.Row="1"
+                  Direction="Row"
+                  JustifyContent="SpaceEvenly"
+                  Margin="10">
+        <Button Text="Skip PIN Creation"
+                Command="{Binding CancelPinSetupCommand}" />
+        <Button Text="Create a PIN"
+                Command="{Binding CreatePINCommand}" />
+      </FlexLayout>
+    </Grid>
+    <VerticalStackLayout HorizontalOptions="Center"
+                         VerticalOptions="Center"
+                         IsVisible="{Binding ShowPinSetup}">
+      <Entry Placeholder="Enter PIN"
+             IsPassword="True"
+             Margin="20,10"
+             Text="{Binding Pin}"
+             CharacterSpacing="5"
+             CursorPosition="50"
+             MaxLength="4"
+             Keyboard="Numeric"
+             VerticalOptions="Center"
+             VerticalTextAlignment="Center"
+             HorizontalTextAlignment="Center" />
+      <Entry Placeholder="Confirm PIN"
+             IsPassword="True"
+             Keyboard="Numeric"
+             MaxLength="4"
+             Text="{Binding ConfirmPin}"
+             VerticalOptions="Center"
+             VerticalTextAlignment="Center"
+             HorizontalTextAlignment="Center" />
+      <Button Text="Set PIN"
+              Command="{Binding SavePinCommand}"
+              Margin="20,10"
+              VerticalOptions="Center"
+              HorizontalOptions="Center" />
+    </VerticalStackLayout>
+  </VerticalStackLayout>
+</ContentPage>

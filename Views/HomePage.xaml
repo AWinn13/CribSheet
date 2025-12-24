@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             x:Class="CribSheet.Views.HomePage"
+             Title="HomePage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             x:DataType="viewModels:HomeViewModel">
+  <VerticalStackLayout>
+    <Button Text="Add Baby"
+            Command="" />
+    <CollectionView ItemsSource="{Binding Babies}"
+                    EmptyView="No Babies added yet, click above to add a baby"
+                    SelectionMode="Single"
+                    SelectionChangedCommand="{Binding GoToBabyCommand}"
+                    SelectionChangedCommandParameter="{Binding SelectedBaby}">
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:Baby">
+          <Border Margin="10"
+                  Padding="10">
+            <VerticalStackLayout>
+              <Label Text="{Binding Name}"
+                     FontAttributes="Bold"
+                     FontSize="Medium" />
+              <Label Text="{Binding BirthDate, StringFormat='Born on {0:MMMM d, yyyy}'}" />
+              <Label Text="{Binding Weight, StringFormat='Weight: {0}'}" />
+            </VerticalStackLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

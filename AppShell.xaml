@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="CribSheet.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:CribSheet"
+       xmlns:views="clr-namespace:CribSheet.Views"
+       Title="CribSheet">
+  <ShellContent Title="Login"
+                ContentTemplate="{DataTemplate views:LoginPage}"
+                Route="LoginPage" FlyoutItemIsVisible="False" />
+  <ShellContent Title="Set Up Pin"
+                ContentTemplate="{DataTemplate views:SetPinPage}"
+                Route="SetPinPage"
+                FlyoutItemIsVisible="False" />
+  
+  <ShellContent Title="Home"
+                ContentTemplate="{DataTemplate views:HomePage}"
+                Route="HomePage" />
+  <ShellContent Title="Add a Baby"
+                ContentTemplate="{DataTemplate views:AddBabyPage}"
+                Route="AddBabyPage" />
+  <ShellContent Title="Baby's Records"
+                ContentTemplate="{DataTemplate views:CurrentBabyPage}"
+                Route="CurrentBabyPage" />
+</Shell>

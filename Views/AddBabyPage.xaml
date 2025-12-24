@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.AddBabyPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AddBabyPage"
+             x:DataType="viewModels:BabyViewModel">
+  <VerticalStackLayout>
+    <Entry Placeholder="Baby's Name"
+           Margin="20,10"
+           Text="{Binding Name}" />
+    <FlexLayout AlignContent="SpaceEvenly"
+                AlignItems="Center">
+      <Label Text="Date of Birth" />
+      <DatePicker Date="{Binding BirthDate}"
+                  MinimumDate="01/01/2000"
+                  MaximumDate="12/31/2026" />
+    </FlexLayout>
+    <Entry Placeholder="Pounds"
+           Keyboard="Numeric"
+           Text="{Binding Lbs}" />
+    <Entry Placeholder="Ounces"
+           Keyboard="Numeric"
+           Text="{Binding Oz}" />
+    <Button Text="Save Baby"
+            Margin="20,10"
+            Command="{Binding AddBabyAsyncCommand}"/>
+    <Label Text="ERROR"
+           TextColor="Red"
+           Margin="20,10"
+           FontSize="Header"
+           IsVisible="{Binding HasErrors}" />
+    <CollectionView ItemsSource="{Binding Babies}"
+                    EmptyView="No Babies">
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:Baby">
+          <Border Margin="10"
+                  Padding="10">
+            <VerticalStackLayout>
+              <Label Text="{Binding Name}"
+                     FontAttributes="Bold"
+                     FontSize="Medium" />
+              <Label Text="{Binding BirthDate, StringFormat='Born on {0:MMMM d, yyyy}'}" />
+              <Label Text="{Binding Weight, StringFormat='Weight: {0}'}" />
+            </VerticalStackLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

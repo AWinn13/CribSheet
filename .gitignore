@@ -1,0 +1,102 @@
+############################
+# .NET / Visual Studio
+############################
+bin/
+obj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+############################
+# .NET MAUI / Xamarin
+############################
+.maui/
+*.db
+*.db-shm
+*.db-wal
+
+############################
+# Android
+############################
+**/bin/
+**/obj/
+**/*.apk
+**/*.aab
+**/*.keystore
+**/*.jks
+**/*.hprof
+**/.gradle/
+**/build/
+local.properties
+
+############################
+# iOS / MacCatalyst
+############################
+**/bin/
+**/obj/
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata/
+DerivedData/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+############################
+# Windows / WinUI
+############################
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixbundle
+*.appinstaller
+*.cer
+
+############################
+# Logs / Temp
+############################
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.pidb
+
+############################
+# Rider / VS Code
+############################
+.idea/
+.vscode/
+*.code-workspace
+
+############################
+# OS files
+############################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+############################
+# Secrets / Local config
+############################
+appsettings.Development.json
+secrets.json
+*.env
+
+############################
+# NuGet
+############################
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+.nuget/packages/
+
+############################
+# Test results
+############################
+TestResults/
+coverage/
