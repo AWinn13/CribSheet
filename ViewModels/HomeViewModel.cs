@@ -2,54 +2,97 @@
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text;
 
 namespace CribSheet.ViewModels
 {
   public partial class HomeViewModel : ObservableObject
   {
-    CribSheetDatabase _database;
+    #region Fields
 
-    [ObservableProperty]
-    private ObservableCollection<Baby>? babies = new();
-
-    [ObservableProperty]
+    private readonly CribSheetDatabase _database;
     private Baby? selectedBaby;
+
+    #endregion
+
+    #region Constructor
 
     public HomeViewModel(CribSheetDatabase database)
     {
       _database = database;
-      AddNewBabyCommand = new AsyncRelayCommand(AddNewBaby);
-      GoToBabyCommand = new AsyncRelayCommand<Baby>(async (baby) =>
-      {
-        if (baby != null)
-        {
-          await Shell.Current.GoToAsync("//CurrentBabyPage", true, new Dictionary<string, object>
-          {
-            { "Baby", baby }
-          });
-        }
-      });
-      LoadBabiesAsync();
+      _ = LoadBabiesAsync();
     }
 
+    #endregion
+
+    #region Properties
+
+    [ObservableProperty]
+    private ObservableCollection<Baby>? babies = new();
+
+    public Baby? SelectedBaby
+    {
+      get => selectedBaby;
+      set
+      {
+        if (SetProperty(ref selectedBaby, value) && value != null)
+        {
+          _ = NavigateToBaby(value);
+          SetProperty(ref selectedBaby, null);
+        }
+      }
+    }
+
+    #endregion
+
+    #region Commands
+
+    [RelayCommand]
     private async Task AddNewBaby()
     {
       await Shell.Current.GoToAsync("//AddBabyPage");
     }
 
-    public IAsyncRelayCommand AddNewBabyCommand { get; }
-    public IAsyncRelayCommand GoToBabyCommand { get; }
+    #endregion
 
-    private async void LoadBabiesAsync()
+    #region Data Methods
+
+    private async Task LoadBabiesAsync()
     {
-      Babies = new ObservableCollection<Baby>(await _database.GetBabiesAsync());
+      try
+      {
+        var babyList = await _database.GetBabiesAsync();
+        Babies = new ObservableCollection<Baby>(babyList);
+      }
+      catch (Exception ex)
+      {
+        await Shell.Current.DisplayAlert("Error",
+          $"Failed to load babies: {ex.Message}", "OK");
+      }
     }
 
-   
+    public async Task RefreshBabies()
+    {
+      await LoadBabiesAsync();
+    }
+
+    #endregion
+
+    #region Navigation
+
+    private async Task NavigateToBaby(Baby baby)
+    {
+      if (baby == null) return;
+
+      await Shell.Current.GoToAsync(
+        "//CurrentBabyPage",
+        true,
+        new Dictionary<string, object>
+        {
+          { "Baby", baby }
+        });
+    }
+
+    #endregion
   }
 }

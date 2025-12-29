@@ -26,28 +26,11 @@
            Text="{Binding Oz}" />
     <Button Text="Save Baby"
             Margin="20,10"
-            Command="{Binding AddBabyAsyncCommand}"/>
+            Command="{Binding AddBabyCommand}"/>
     <Label Text="ERROR"
            TextColor="Red"
            Margin="20,10"
            FontSize="Header"
            IsVisible="{Binding HasErrors}" />
-    <CollectionView ItemsSource="{Binding Babies}"
-                    EmptyView="No Babies">
-      <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:Baby">
-          <Border Margin="10"
-                  Padding="10">
-            <VerticalStackLayout>
-              <Label Text="{Binding Name}"
-                     FontAttributes="Bold"
-                     FontSize="Medium" />
-              <Label Text="{Binding BirthDate, StringFormat='Born on {0:MMMM d, yyyy}'}" />
-              <Label Text="{Binding Weight, StringFormat='Weight: {0}'}" />
-            </VerticalStackLayout>
-          </Border>
-        </DataTemplate>
-      </CollectionView.ItemTemplate>
-    </CollectionView>
   </VerticalStackLayout>
 </ContentPage>

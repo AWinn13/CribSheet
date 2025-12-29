@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.NewFeedingRecordPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             Title="Add Feeding Record"
+             x:DataType="viewModels:NewFeedingRecordViewModel" SafeAreaEdges="All">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="10">
+      <Label Text="New Feeding Record"
+             FontSize="Title"
+             FontAttributes="Bold"
+             HorizontalOptions="Center"
+             Margin="0,0,0,10" />
+
+      <!-- Feeding Type -->
+      <Label Text="Feeding Type" FontAttributes="Bold" />
+      <Picker ItemsSource="{Binding FeedingTypes}"
+              SelectedItem="{Binding SelectedFeedingType}"
+              Title="Select feeding type" />
+
+      <!-- Time -->
+      <Label Text="Date and Time" FontAttributes="Bold" />
+      <FlexLayout  Direction="Row" JustifyContent="Start" AlignItems="Center" Margin="10">
+        <DatePicker Date="{Binding FeedingDate}"
+                    HorizontalOptions="Fill" Margin="10"/>
+        <TimePicker Time="{Binding FeedingTime}"
+                      />
+      </FlexLayout>
+
+      <!-- Amount (ml) -->
+      <Label Text="Amount (ml)" FontAttributes="Bold" />
+      <Entry Placeholder="Enter amount in ml"
+             Keyboard="Numeric"
+             Text="{Binding AmountMl}" />
+
+      <!-- Duration (minutes) -->
+      <Label Text="Duration (minutes)" FontAttributes="Bold" />
+      <Entry Placeholder="Enter duration in minutes"
+             Keyboard="Numeric"
+             Text="{Binding DurationMinutes}" />
+
+      <!-- Notes -->
+      <Label Text="Notes (Optional)" FontAttributes="Bold" />
+      <Editor Placeholder="Add any notes here..."
+              Text="{Binding Notes}"
+              HeightRequest="100"
+              AutoSize="TextChanges" />
+
+      <!-- Submit Button -->
+      <Button Text="Save Feeding Record"
+              Command="{Binding SaveFeedingCommand}"
+              BackgroundColor="{StaticResource Primary}"
+              TextColor="White"
+              Margin="0,20,0,0"
+              HeightRequest="50" />
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

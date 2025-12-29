@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.NewPottyRecordPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             Title="Add Diaper Record"
+             x:DataType="viewModels:NewPottyRecordViewModel">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="15">
+      <Label Text="New Diaper Record"
+             FontSize="Title"
+             FontAttributes="Bold"
+             HorizontalOptions="Center"
+             Margin="0,0,0,20" />
+
+      <!-- Diaper Type -->
+      <Label Text="Diaper Type" FontAttributes="Bold" />
+      <Picker ItemsSource="{Binding DiaperTypes}"
+              SelectedItem="{Binding SelectedDiaperType}"
+              Title="Select diaper type" />
+
+      <!-- Time -->
+      <Label Text="Date and Time" FontAttributes="Bold" />
+      <HorizontalStackLayout Spacing="10">
+        <DatePicker Date="{Binding PottyDate}"
+                    HorizontalOptions="FillAndExpand" />
+        <TimePicker Time="{Binding PottyTime}"
+                    HorizontalOptions="FillAndExpand" />
+      </HorizontalStackLayout>
+
+      <!-- Notes -->
+      <Label Text="Notes (Optional)" FontAttributes="Bold" />
+      <Editor Placeholder="Add any notes here..."
+              Text="{Binding Notes}"
+              HeightRequest="100"
+              AutoSize="TextChanges" />
+
+      <!-- Submit Button -->
+      <Button Text="Save Diaper Record"
+              Command="{Binding SavePottyCommand}"
+              BackgroundColor="{StaticResource Primary}"
+              TextColor="White"
+              Margin="0,20,0,0"
+              HeightRequest="50" />
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

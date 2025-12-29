@@ -8,6 +8,7 @@ namespace CribSheet.Services
     public class PinService : IPinService
     {
     private const string PinKey = "app_pin_hash";
+    private const string RemindUser = "remind_user";
 
     public async Task<bool> HasPinAsync()
     {
@@ -49,5 +50,18 @@ namespace CribSheet.Services
       SecureStorage.Remove(PinKey);
       return Task.CompletedTask;
     }
-  }
+
+        public async Task SetRemindUser(bool remind)
+        {
+            await SecureStorage.SetAsync(RemindUser, remind.ToString());
+    }
+
+        public async Task<bool> ShouldRemindUserAsync()
+        {
+          var reminder  = await SecureStorage.GetAsync(RemindUser);
+          if (reminder is null)
+            return true;
+          return bool.Parse(reminder);
+    }
+    }
 }

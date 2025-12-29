@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.NewSleepRecordPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             Title="Add Sleep Record"
+             x:DataType="viewModels:NewSleepRecordViewModel">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="15">
+      <Label Text="New Sleep Record"
+             FontSize="Title"
+             FontAttributes="Bold"
+             HorizontalOptions="Center"
+             Margin="0,0,0,20" />
+
+      <!-- Sleep Type -->
+      <Label Text="Sleep Type" FontAttributes="Bold" />
+      <Picker ItemsSource="{Binding SleepTypes}"
+              SelectedItem="{Binding SelectedSleepType}"
+              Title="Select sleep type" />
+
+      <!-- Timer Section -->
+      <Border StrokeThickness="2"
+              Stroke="{StaticResource Primary}"
+              Padding="15"
+              Margin="0,10,0,10">
+        <VerticalStackLayout Spacing="10">
+          <Label Text="Sleep Timer"
+                 FontAttributes="Bold"
+                 FontSize="18"
+                 HorizontalOptions="Center" />
+
+          <Label Text="{Binding ElapsedTime}"
+                 FontSize="32"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 TextColor="{StaticResource Primary}" />
+
+          <HorizontalStackLayout Spacing="10"
+                                 HorizontalOptions="Center">
+            <Button Text="Start Timer"
+                    Command="{Binding StartTimerCommand}"
+                    IsEnabled="{Binding CanStartTimer}"
+                    WidthRequest="120" />
+            <Button Text="Stop Timer"
+                    Command="{Binding StopTimerCommand}"
+                    IsEnabled="{Binding IsTimerRunning}"
+                    BackgroundColor="Red"
+                    WidthRequest="120" />
+          </HorizontalStackLayout>
+
+          <Label Text="{Binding TimerStatus}"
+                 FontSize="12"
+                 HorizontalOptions="Center"
+                 TextColor="{StaticResource Gray600}" />
+        </VerticalStackLayout>
+      </Border>
+
+      <!-- Manual Start Time -->
+      <Label Text="Start Date and Time" FontAttributes="Bold" />
+      <HorizontalStackLayout Spacing="10">
+        <DatePicker Date="{Binding StartDate}"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding CanEditTimes}" />
+        <TimePicker Time="{Binding StartTime}"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding CanEditTimes}" />
+      </HorizontalStackLayout>
+
+      <!-- Manual End Time -->
+      <Label Text="End Date and Time (Optional)" FontAttributes="Bold" />
+      <HorizontalStackLayout Spacing="10">
+        <DatePicker Date="{Binding EndDate}"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding CanEditTimes}" />
+        <TimePicker Time="{Binding EndTime}"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding CanEditTimes}" />
+      </HorizontalStackLayout>
+
+      <!-- Wake Reason -->
+      <Label Text="Wake Reason (if woke up early)" FontAttributes="Bold" />
+      <Picker ItemsSource="{Binding WakeReasons}"
+              SelectedItem="{Binding SelectedWakeReason}"
+              Title="Select wake reason" />
+
+      <!-- Notes -->
+      <Label Text="Notes (Optional)" FontAttributes="Bold" />
+      <Editor Placeholder="Add any notes here..."
+              Text="{Binding Notes}"
+              HeightRequest="100"
+              AutoSize="TextChanges" />
+
+      <!-- Submit Button -->
+      <Button Text="Save Sleep Record"
+              Command="{Binding SaveSleepCommand}"
+              BackgroundColor="{StaticResource Primary}"
+              TextColor="White"
+              Margin="0,20,0,0"
+              HeightRequest="50" />
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

@@ -1,4 +1,5 @@
 ﻿using CribSheet.Services;
+using CribSheet.Views;
 
 namespace CribSheet
 {
@@ -8,6 +9,10 @@ namespace CribSheet
     {
       InitializeComponent();
 
+      // Register routes for navigation
+      Routing.RegisterRoute(nameof(NewFeedingRecordPage), typeof(NewFeedingRecordPage));
+      Routing.RegisterRoute(nameof(NewPottyRecordPage), typeof(NewPottyRecordPage));
+      Routing.RegisterRoute(nameof(NewSleepRecordPage), typeof(NewSleepRecordPage));
     }
   }
 }

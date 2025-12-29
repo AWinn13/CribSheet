@@ -22,10 +22,13 @@ namespace CribSheet
     {
       MainThread.BeginInvokeOnMainThread(async () =>
       {
+         
         if (await _pinService.HasPinAsync())
           await Shell.Current.GoToAsync("//LoginPage");
+        else if (Preferences.Default.Get("RemindPinSetup", true))
+            await Shell.Current.GoToAsync("//SetPinPage");
         else
-          await Shell.Current.GoToAsync("//SetPinPage");
+            await Shell.Current.GoToAsync("//HomePage");
       });
     }
   }

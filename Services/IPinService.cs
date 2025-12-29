@@ -10,5 +10,7 @@ namespace CribSheet.Services
     Task SavePinAsync(string pin);
     Task<bool> ValidatePinAsync(string pin);
     Task ClearAsync();
+    Task SetRemindUser(bool remind);
+    Task<bool> ShouldRemindUserAsync();
   }
 }

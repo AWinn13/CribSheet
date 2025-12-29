@@ -1,25 +1,32 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CribSheet.ViewModels
 {
   public partial class BabyViewModel : ObservableObject, INotifyDataErrorInfo
   {
-    private CribSheetDatabase _database;
+    #region Fields
 
-    // The errors dictionary
-    private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+    private readonly CribSheetDatabase _database;
+    private readonly Dictionary<string, List<string>> _errors = new();
+    private double weight;
+
+    #endregion
+
+    #region Constructor
+
+    public BabyViewModel(CribSheetDatabase database)
+    {
+      _database = database;
+    }
+
+    #endregion
+
+    #region Properties
 
     [ObservableProperty]
     private string name = string.Empty;
@@ -33,59 +40,87 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private double oz;
 
-    [ObservableProperty]
-    private List<Baby>? babies = new();
+    #endregion
 
-    private double weight;
+    #region INotifyDataErrorInfo Implementation
 
-    public BabyViewModel(CribSheetDatabase database)
-    {
-      AddBabyAsyncCommand = new AsyncRelayCommand(AddBabyAsync);
-      _database = database;
-    }
-
-    public IAsyncRelayCommand AddBabyAsyncCommand { get; }
-
-    private async Task AddBabyAsync()
-    {
-      var baby = new Baby
-      {
-        CreatedAt = DateTime.Now,
-        Dob = this.BirthDate,
-        Name = this.Name,
-        Weight = (long)((this.Lbs * 16) + this.Oz)
-      };
-      ValidateName(baby.Name);
-      ValidateBirthDate(baby.Dob ?? DateTime.MinValue);
-      ValidateWeight();
-      if (HasErrors)
-      {
-        // Validation failed, return early
-        return;
-      }
-
-      await _database.AddBabyAsync(baby);
-      var babyList = await _database.GetBabiesAsync();
-      Babies = babyList.ToList();
-
-    }
-
-    // IDataErrorInfo implementation (for validation)
     public bool HasErrors => _errors.Any();
 
-    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
-    public IEnumerable<string> GetErrors(string propertyName)
+    public IEnumerable GetErrors(string? propertyName)
     {
+      if (string.IsNullOrEmpty(propertyName))
+        return Enumerable.Empty<string>();
+
       if (_errors.ContainsKey(propertyName))
         return _errors[propertyName];
+
       return Enumerable.Empty<string>();
     }
 
-    // Validate Name property
+    #endregion
+
+    #region Commands
+
+    [RelayCommand]
+    private async Task AddBaby()
+    {
+      if (!ValidateForm())
+        return;
+
+      try
+      {
+        var baby = CreateBaby();
+        var result = await _database.AddBabyAsync(baby);
+
+        if (result == 1)
+        {
+          await NavigateToHomePage();
+        }
+        else
+        {
+          await Shell.Current.DisplayAlert("Error",
+            "Failed to add baby to database.", "OK");
+        }
+      }
+      catch (Exception ex)
+      {
+        await Shell.Current.DisplayAlert("Error",
+          $"Failed to add baby: {ex.Message}", "OK");
+      }
+    }
+
+    #endregion
+
+    #region Validation
+
     partial void OnNameChanged(string value)
     {
       ValidateName(value);
+    }
+
+    partial void OnBirthDateChanged(DateTime value)
+    {
+      ValidateBirthDate(value);
+    }
+
+    partial void OnLbsChanged(double value)
+    {
+      ValidateWeight();
+    }
+
+    partial void OnOzChanged(double value)
+    {
+      ValidateWeight();
+    }
+
+    private bool ValidateForm()
+    {
+      ValidateName(Name);
+      ValidateBirthDate(BirthDate);
+      ValidateWeight();
+      return !HasErrors;
     }
 
     private void ValidateName(string value)
@@ -100,12 +135,6 @@ namespace CribSheet.ViewModels
       }
     }
 
-    // Validate BirthDate property
-    partial void OnBirthDateChanged(DateTime value)
-    {
-      ValidateBirthDate(value);
-    }
-
     private void ValidateBirthDate(DateTime value)
     {
       if (value >= DateTime.Now)
@@ -118,20 +147,9 @@ namespace CribSheet.ViewModels
       }
     }
 
-    // Validate Lbs and Oz properties (Weight)
-    partial void OnLbsChanged(double value)
-    {
-      ValidateWeight();
-    }
-
-    partial void OnOzChanged(double value)
-    {
-      ValidateWeight();
-    }
-
     private void ValidateWeight()
     {
-      double totalWeight = (this.Lbs * 16) + this.Oz;
+      double totalWeight = (Lbs * 16) + Oz;
       if (totalWeight <= 0)
       {
         AddError(nameof(weight), "Weight must be greater than zero.");
@@ -142,15 +160,38 @@ namespace CribSheet.ViewModels
       }
     }
 
-    // Helper methods for adding/clearing errors
+    #endregion
+
+    #region Private Methods
+
+    private Baby CreateBaby()
+    {
+      return new Baby
+      {
+        CreatedAt = DateTime.Now,
+        Dob = BirthDate,
+        Name = Name,
+        Weight = (long)((Lbs * 16) + Oz)
+      };
+    }
+
+    private async Task NavigateToHomePage()
+    {
+      await Shell.Current.GoToAsync("//HomePage");
+    }
+
     private void AddError(string propertyName, string errorMessage)
     {
       if (!_errors.ContainsKey(propertyName))
       {
         _errors[propertyName] = new List<string>();
       }
-      _errors[propertyName].Add(errorMessage);
-      OnErrorsChanged(propertyName);
+
+      if (!_errors[propertyName].Contains(errorMessage))
+      {
+        _errors[propertyName].Add(errorMessage);
+        OnErrorsChanged(propertyName);
+      }
     }
 
     private void ClearErrors(string propertyName)
@@ -167,9 +208,6 @@ namespace CribSheet.ViewModels
       ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
     }
 
-    IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName)
-    {
-      return GetErrors(propertyName);
-    }
+    #endregion
   }
 }

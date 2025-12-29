@@ -20,16 +20,19 @@ namespace CribSheet.Models
 
     public DateTime? Dob { get; set; } // date only in DB; DateTime works fine
 
-    // Navigation
+    [Ignore]
+    public int? Age { get => GetBabyAge(); }
 
-    //public List<BabyUser> BabyUsers { get; set; } = new();
+        // Navigation
+
+        //public List<BabyUser> BabyUsers { get; set; } = new();
 
 
-    //public List<FeedingRecord> FeedingRecords { get; set; } = new();
+        //public List<FeedingRecord> FeedingRecords { get; set; } = new();
 
-    //public List<SleepRecord> SleepRecords { get; set; } = new();
+        //public List<SleepRecord> SleepRecords { get; set; } = new();
 
-    public int GetBabyAge()
+        public int GetBabyAge()
     {
       if (Dob == null)
       {

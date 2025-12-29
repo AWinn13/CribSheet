@@ -8,21 +8,20 @@
              x:DataType="viewModels:HomeViewModel">
   <VerticalStackLayout>
     <Button Text="Add Baby"
-            Command="" />
+            Command="{Binding AddNewBabyCommand}" />
     <CollectionView ItemsSource="{Binding Babies}"
                     EmptyView="No Babies added yet, click above to add a baby"
                     SelectionMode="Single"
-                    SelectionChangedCommand="{Binding GoToBabyCommand}"
-                    SelectionChangedCommandParameter="{Binding SelectedBaby}">
+                    SelectedItem="{Binding SelectedBaby}">
       <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:Baby">
           <Border Margin="10"
-                  Padding="10">
+                  Padding="10" >
             <VerticalStackLayout>
               <Label Text="{Binding Name}"
                      FontAttributes="Bold"
                      FontSize="Medium" />
-              <Label Text="{Binding BirthDate, StringFormat='Born on {0:MMMM d, yyyy}'}" />
+              <Label Text="{Binding Age, StringFormat='{0} Months Old'}" />
               <Label Text="{Binding Weight, StringFormat='Weight: {0}'}" />
             </VerticalStackLayout>
           </Border>

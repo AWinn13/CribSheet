@@ -5,34 +5,97 @@
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
              Title="CurrentBabyPage"
+             x:Name="currentBabyPage"
              x:DataType="viewModels:CurrentBabyViewModel">
-    <VerticalStackLayout>
+  <VerticalStackLayout>
     <Label Text="{Binding CurrentBaby.Name}"
            FontSize="Large"
            FontAttributes="Bold"
            HorizontalOptions="Center"
            Margin="0,20,0,10" />
+    <Button Text="Add Feeding Record"
+            Command="{Binding NavigateToNewFeedingCommand}"
+            Margin="10" />
+    <Button Text="Add Diaper Record"
+            Command="{Binding NavigateToNewPottyCommand}"
+            Margin="10" />
+    <Button Text="Add Sleep Record"
+            Command="{Binding NavigateToNewSleepCommand}"
+            Margin="10" />
     <CollectionView ItemsSource="{Binding FeedingRecords}"
-                    EmptyView="No feedings recorded yet">
+                    EmptyView="No eating recorded yet"
+                    Header="Eating Records">
       <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:FeedingRecord">
           <Border Margin="10"
                   Padding="10">
+            <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
+              <VerticalStackLayout>
+                <Label Text="{Binding Time, StringFormat='Feeding Time: {0:MMMM d, yyyy h:mm tt}'}"
+                       FontAttributes="Bold"
+                       FontSize="Medium" />
+                <Label Text="{Binding AmountMl, StringFormat='Amount: {0} ml'}" />
+                <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
+                <Label Text="{Binding DurationMinutes, StringFormat='Duration: {0} minutes'}" />
+              </VerticalStackLayout>
+              <HorizontalStackLayout Spacing="10">
+                <ImageButton  Source="edit.png"
+                              Command="{Binding BindingContext.EditFeedingCommand, Source={x:Reference currentBabyPage}}"
+                              CommandParameter="{Binding .}"
+                              WidthRequest="30"
+                              HeightRequest="30"
+                              HorizontalOptions="End"
+                              VerticalOptions="Start"
+                              BackgroundColor="Transparent" />
+                <ImageButton  Source="delete.png"
+                              Command="{Binding BindingContext.DeleteFeedingCommand, Source={x:Reference currentBabyPage}}"
+                              CommandParameter="{Binding .}"
+                              WidthRequest="30"
+                              HeightRequest="30"
+                              HorizontalOptions="End"
+                              VerticalOptions="Start"
+                              BackgroundColor="Transparent" />
+              </HorizontalStackLayout>
+            </FlexLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+    <CollectionView ItemsSource="{Binding PottyRecords}"
+                    EmptyView="No diaper changes recorded yet"
+                    Header="Potty/Diaper Records">
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:PottyRecord">
+          <Border Margin="10"
+                  Padding="10">
             <VerticalStackLayout>
-              <Label Text="{Binding FeedingTime , StringFormat='Feeding Time: {0:MMMM d, yyyy h:mm tt}'}"
+              <Label Text="{Binding Time, StringFormat='Diaper Change: {0:MMMM d, yyyy h:mm tt}'}"
                      FontAttributes="Bold"
                      FontSize="Medium" />
-              <Label Text="{Binding Amount, StringFormat='Amount: {0} oz'}" />
+              <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
+              <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
             </VerticalStackLayout>
           </Border>
         </DataTemplate>
       </CollectionView.ItemTemplate>
     </CollectionView>
     <CollectionView ItemsSource="{Binding SleepRecords}"
-                    EmptyView="No diapers recorded yet">
+                    EmptyView="No sleep records yet"
+                    Header="Sleep Records">
       <CollectionView.ItemTemplate>
-        <DataTemplate>
-          
+        <DataTemplate x:DataType="models:SleepRecord">
+          <Border Margin="10"
+                  Padding="10">
+            <VerticalStackLayout>
+              <Label Text="{Binding StartTime, StringFormat='Started: {0:MMMM d, yyyy h:mm tt}'}"
+                     FontAttributes="Bold"
+                     FontSize="Medium" />
+              <Label Text="{Binding EndTime, StringFormat='Ended: {0:MMMM d, yyyy h:mm tt}'}" />
+              <Label Text="{Binding Duration, StringFormat='Duration: {0:hh\\:mm\\:ss}'}" />
+              <Label Text="{Binding TypeOfSleep, StringFormat='Type: {0}'}" />
+              <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
+            </VerticalStackLayout>
+          </Border>
         </DataTemplate>
       </CollectionView.ItemTemplate>
     </CollectionView>

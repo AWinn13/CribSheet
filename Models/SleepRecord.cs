@@ -15,7 +15,26 @@ namespace CribSheet.Models
 
     public DateTime? EndTime { get; set; }
 
+    public SleepType TypeOfSleep { get; set; }
+
+    public WakeReason WhyNoSleep { get; set; }
     public string? Notes { get; set; }
 
+  [Ignore]
+    public TimeSpan? Duration =>
+       EndTime.HasValue ? EndTime.Value - StartTime : null;
+
+  }
+  public enum SleepType
+  {
+    Night,
+    Nap
+  }
+
+  public enum WakeReason
+  {
+    Diaper,
+    Feeding,
+    Other
   }
 }

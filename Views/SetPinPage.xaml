@@ -26,8 +26,9 @@
                   Direction="Row"
                   JustifyContent="SpaceEvenly"
                   Margin="10">
-        <Button Text="Skip PIN Creation"
-                Command="{Binding CancelPinSetupCommand}" />
+        <Button x:Name="skipPINButton"
+          Text="Skip PIN Creation"
+                Clicked="Button_Clicked" />
         <Button Text="Create a PIN"
                 Command="{Binding CreatePINCommand}" />
       </FlexLayout>
