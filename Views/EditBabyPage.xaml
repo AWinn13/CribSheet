@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.EditBabyPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Edit Baby"
+             x:DataType="viewModels:EditBabyViewModel">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="15">
+      <Label Text="Edit Baby Information"
+             FontSize="Title"
+             FontAttributes="Bold"
+             HorizontalOptions="Center"
+             Margin="0,0,0,20" />
+
+      <!-- Baby Name -->
+      <Label Text="Baby's Name" FontAttributes="Bold" />
+      <Entry Placeholder="Enter baby's name"
+             Text="{Binding Name}" />
+
+      <!-- Date of Birth -->
+      <Label Text="Date of Birth" FontAttributes="Bold" />
+      <DatePicker Date="{Binding BirthDate}"
+                  MinimumDate="01/01/2000"
+                  MaximumDate="12/31/2026" />
+
+      <!-- Weight -->
+      <Label Text="Birth Weight" FontAttributes="Bold" />
+      <HorizontalStackLayout Spacing="10">
+        <VerticalStackLayout HorizontalOptions="Fill">
+          <Label Text="Pounds" FontSize="12" />
+          <Entry Placeholder="Pounds"
+                 Keyboard="Numeric"
+                 Text="{Binding Lbs}"
+                 HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+        <VerticalStackLayout HorizontalOptions="Fill">
+          <Label Text="Ounces" FontSize="12" />
+          <Entry Placeholder="Ounces"
+                 Keyboard="Numeric"
+                 Text="{Binding Oz}"
+                 HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+      </HorizontalStackLayout>
+
+      <!-- Error Display -->
+      <Label Text="Please correct the errors above"
+             TextColor="Red"
+             FontSize="14"
+             HorizontalOptions="Center"
+             IsVisible="{Binding HasErrors}"
+             Margin="0,10,0,0" />
+
+      <!-- Action Buttons -->
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
+        <Button Text="Save Changes"
+                Command="{Binding UpdateBabyCommand}"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="White"
+                Grid.Column="0"
+                HeightRequest="50" />
+        <Button Text="Cancel"
+                Command="{Binding CancelCommand}"
+                BackgroundColor="{StaticResource Gray400}"
+                TextColor="White"
+                Grid.Column="1"
+                HeightRequest="50" />
+      </Grid>
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

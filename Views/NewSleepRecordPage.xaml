@@ -4,8 +4,14 @@
              x:Class="CribSheet.Views.NewSleepRecordPage"
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="Add Sleep Record"
              x:DataType="viewModels:NewSleepRecordViewModel">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
   <ScrollView>
     <VerticalStackLayout Padding="20" Spacing="15">
       <Label Text="New Sleep Record"
@@ -47,6 +53,9 @@
                     Command="{Binding StopTimerCommand}"
                     IsEnabled="{Binding IsTimerRunning}"
                     BackgroundColor="Red"
+                    WidthRequest="120" />
+            <Button Text="Reset Timer"
+                    Command="{Binding ResetTimerCommand}"
                     WidthRequest="120" />
           </HorizontalStackLayout>
 

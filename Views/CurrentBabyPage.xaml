@@ -8,96 +8,114 @@
              x:Name="currentBabyPage"
              x:DataType="viewModels:CurrentBabyViewModel">
   <VerticalStackLayout>
-    <Label Text="{Binding CurrentBaby.Name}"
-           FontSize="Large"
-           FontAttributes="Bold"
-           HorizontalOptions="Center"
-           Margin="0,20,0,10" />
-    <Button Text="Add Feeding Record"
-            Command="{Binding NavigateToNewFeedingCommand}"
-            Margin="10" />
-    <Button Text="Add Diaper Record"
-            Command="{Binding NavigateToNewPottyCommand}"
-            Margin="10" />
-    <Button Text="Add Sleep Record"
-            Command="{Binding NavigateToNewSleepCommand}"
-            Margin="10" />
-    <CollectionView ItemsSource="{Binding FeedingRecords}"
-                    EmptyView="No eating recorded yet"
-                    Header="Eating Records">
-      <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:FeedingRecord">
-          <Border Margin="10"
-                  Padding="10">
-            <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
-              <VerticalStackLayout>
-                <Label Text="{Binding Time, StringFormat='Feeding Time: {0:MMMM d, yyyy h:mm tt}'}"
-                       FontAttributes="Bold"
-                       FontSize="Medium" />
-                <Label Text="{Binding AmountMl, StringFormat='Amount: {0} ml'}" />
-                <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
-                <Label Text="{Binding DurationMinutes, StringFormat='Duration: {0} minutes'}" />
-              </VerticalStackLayout>
-              <HorizontalStackLayout Spacing="10">
-                <ImageButton  Source="edit.png"
-                              Command="{Binding BindingContext.EditFeedingCommand, Source={x:Reference currentBabyPage}}"
-                              CommandParameter="{Binding .}"
-                              WidthRequest="30"
-                              HeightRequest="30"
-                              HorizontalOptions="End"
-                              VerticalOptions="Start"
-                              BackgroundColor="Transparent" />
-                <ImageButton  Source="delete.png"
-                              Command="{Binding BindingContext.DeleteFeedingCommand, Source={x:Reference currentBabyPage}}"
-                              CommandParameter="{Binding .}"
-                              WidthRequest="30"
-                              HeightRequest="30"
-                              HorizontalOptions="End"
-                              VerticalOptions="Start"
-                              BackgroundColor="Transparent" />
-              </HorizontalStackLayout>
-            </FlexLayout>
-          </Border>
-        </DataTemplate>
-      </CollectionView.ItemTemplate>
-    </CollectionView>
-    <CollectionView ItemsSource="{Binding PottyRecords}"
-                    EmptyView="No diaper changes recorded yet"
-                    Header="Potty/Diaper Records">
-      <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:PottyRecord">
-          <Border Margin="10"
-                  Padding="10">
-            <VerticalStackLayout>
-              <Label Text="{Binding Time, StringFormat='Diaper Change: {0:MMMM d, yyyy h:mm tt}'}"
-                     FontAttributes="Bold"
-                     FontSize="Medium" />
-              <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
-              <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
-            </VerticalStackLayout>
-          </Border>
-        </DataTemplate>
-      </CollectionView.ItemTemplate>
-    </CollectionView>
-    <CollectionView ItemsSource="{Binding SleepRecords}"
-                    EmptyView="No sleep records yet"
-                    Header="Sleep Records">
-      <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:SleepRecord">
-          <Border Margin="10"
-                  Padding="10">
-            <VerticalStackLayout>
-              <Label Text="{Binding StartTime, StringFormat='Started: {0:MMMM d, yyyy h:mm tt}'}"
-                     FontAttributes="Bold"
-                     FontSize="Medium" />
-              <Label Text="{Binding EndTime, StringFormat='Ended: {0:MMMM d, yyyy h:mm tt}'}" />
-              <Label Text="{Binding Duration, StringFormat='Duration: {0:hh\\:mm\\:ss}'}" />
-              <Label Text="{Binding TypeOfSleep, StringFormat='Type: {0}'}" />
-              <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
-            </VerticalStackLayout>
-          </Border>
-        </DataTemplate>
-      </CollectionView.ItemTemplate>
-    </CollectionView>
+    <HorizontalStackLayout HorizontalOptions="Center"
+                           Spacing="20"
+                           Margin="0,20,0,10">
+      <Label Text="{Binding Name}"
+             FontSize="Large"
+             FontAttributes="Bold"
+             VerticalOptions="Center" />
+      <ImageButton Source="edit.png"
+                   Command="{Binding EditBabyCommand}"
+                   WidthRequest="30"
+                   HeightRequest="30"
+                   VerticalOptions="Center"
+                   BackgroundColor="Transparent" />
+    </HorizontalStackLayout>
+    <VerticalStackLayout HorizontalOptions="Center"
+                           Spacing="20"
+                           Margin="0,20,0,10">
+      <Label Text="{Binding AgeInMonths, StringFormat='Age: {0} Months'}"
+             FontSize="Medium"
+             VerticalOptions="Center" />
+      <Label Text="{Binding Weight, StringFormat='Weight: {0} lbs'}"
+             FontSize="Medium"
+             VerticalOptions="Center"/>
+      <Button Text="Edit Baby Info"
+              WidthRequest="200"
+              Command="{Binding EditBabyCommand}" />
+    </VerticalStackLayout>
+    <Grid ColumnDefinitions="*,*,*"
+          RowDefinitions="*, *"
+          ColumnSpacing="5">
+      <Button Text="Feeding Records"
+              ImageSource="pediatrics.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="0"
+              Grid.Row="0"
+              Command="{Binding NavigateToFeedingsCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+      <Button Text="Add Feeding Record"
+              ImageSource="pediatrics.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="0"
+              Grid.Row="1"
+              Command="{Binding NavigateToNewFeedingCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+      <Button Text="Diaper Records"
+              ImageSource="baby_changing_station.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="1"
+              Grid.Row="0"
+              Command="{Binding NavigateToPottyCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+      <Button Text="Add Diaper Record"
+              ImageSource="baby_changing_station.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="1"
+              Grid.Row="1"
+              Command="{Binding NavigateToNewPottyCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+      <Button Text="Sleep Records"
+              ImageSource="crib.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="2"
+              Grid.Row="0"
+              Command="{Binding NavigateToSleepCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+      <Button Text="Add Sleep Record"
+              ImageSource="crib.png"
+              ContentLayout="Bottom"
+              FontAutoScalingEnabled="True"
+              LineBreakMode="WordWrap"
+              HorizontalOptions="Center"
+              FontSize="Micro"
+              Grid.Column="2"
+              Grid.Row="1"
+              Command="{Binding NavigateToNewSleepCommand}"
+              Margin="10"
+              WidthRequest="150"
+              HeightRequest="100" />
+    </Grid>
   </VerticalStackLayout>
 </ContentPage>

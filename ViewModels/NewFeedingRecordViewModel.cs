@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class NewFeedingRecordViewModel : ObservableObject, IQueryAttributable
+  public partial class NewFeedingRecordViewModel : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
@@ -120,11 +120,6 @@ namespace CribSheet.ViewModels
         DurationMinutes = string.IsNullOrWhiteSpace(DurationMinutes) ? null : int.Parse(DurationMinutes),
         Notes = Notes
       };
-    }
-
-    private async Task NavigateBack()
-    {
-      await Shell.Current.GoToAsync("..");
     }
 
     #endregion

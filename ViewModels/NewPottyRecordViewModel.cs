@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class NewPottyRecordViewModel : ObservableObject, IQueryAttributable
+  public partial class NewPottyRecordViewModel : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
@@ -71,7 +71,7 @@ namespace CribSheet.ViewModels
       }
       catch (Exception ex)
       {
-        await Shell.Current.DisplayAlert("Error",
+        await Shell.Current.DisplayAlertAsync("Error",
           $"Failed to save diaper record: {ex.Message}", "OK");
       }
     }
@@ -96,7 +96,7 @@ namespace CribSheet.ViewModels
     {
       if (string.IsNullOrWhiteSpace(SelectedDiaperType))
       {
-        Shell.Current.DisplayAlert("Error", "Please select a diaper type", "OK");
+        Shell.Current.DisplayAlertAsync("Error", "Please select a diaper type", "OK");
         return false;
       }
 
@@ -112,11 +112,6 @@ namespace CribSheet.ViewModels
         Type = Enum.Parse<DiaperType>(SelectedDiaperType),
         Notes = Notes
       };
-    }
-
-    private async Task NavigateBack()
-    {
-      await Shell.Current.GoToAsync("..");
     }
 
     #endregion

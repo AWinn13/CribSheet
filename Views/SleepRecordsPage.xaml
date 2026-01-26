@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.SleepRecordsPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             x:DataType="viewModels:SleepRecordsViewModel"
+             Title="Sleep Records"
+             x:Name="sleepRecordsPage">
+  <VerticalStackLayout>
+    <CollectionView ItemsSource="{Binding SleepRecords}">
+      <CollectionView.Header>
+        <Label Text="Sleep Records"
+               FontSize="Medium"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+      </CollectionView.Header>
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:SleepRecord">
+          <Border Margin="10"
+                  Padding="10">
+            <FlexLayout Direction="Row"
+                        JustifyContent="SpaceBetween">
+              <VerticalStackLayout>
+                <Label Text="{Binding StartTime, StringFormat='Started: {0:MMMM d, yyyy h:mm tt}'}"
+                       FontAttributes="Bold"
+                       FontSize="Medium" />
+                <Label Text="{Binding EndTime, StringFormat='Ended: {0:MMMM d, yyyy h:mm tt}'}" />
+                <Label Text="{Binding Duration, StringFormat='Duration: {0:hh\\:mm\\:ss}'}" />
+                <Label Text="{Binding TypeOfSleep, StringFormat='Type: {0}'}" />
+                <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
+              </VerticalStackLayout>
+              <HorizontalStackLayout Spacing="10">
+                <ImageButton Source="edit.png"
+                             Command="{Binding BindingContext.EditSleepCommand, Source={x:Reference sleepRecordsPage}}"
+                             CommandParameter="{Binding .}"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent" />
+                <ImageButton Source="delete.png"
+                             Command="{Binding BindingContext.DeleteSleepCommand, Source={x:Reference sleepRecordsPage}}"
+                             CommandParameter="{Binding .}"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent" />
+              </HorizontalStackLayout>
+            </FlexLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+      <CollectionView.EmptyView>
+        <ContentView>
+          <Label Text="No Sleep Records Available"
+                 FontAttributes="Bold"
+                 Margin="0,40,0,0"
+                 HorizontalOptions="Center"
+                 VerticalOptions="End" />
+        </ContentView>
+      </CollectionView.EmptyView>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

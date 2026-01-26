@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class HomeViewModel : ObservableObject
+  public partial class HomeViewModel : BaseViewModel
   {
     #region Fields
 
@@ -66,7 +66,7 @@ namespace CribSheet.ViewModels
       }
       catch (Exception ex)
       {
-        await Shell.Current.DisplayAlert("Error",
+        await Shell.Current.DisplayAlertAsync("Error",
           $"Failed to load babies: {ex.Message}", "OK");
       }
     }

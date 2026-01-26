@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.PottyRecordsPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             x:DataType="viewModels:PottyRecordsViewModel"
+             Title="Diaper Records"
+             x:Name="pottyRecordsPage">
+  <VerticalStackLayout>
+    <CollectionView ItemsSource="{Binding PottyRecords}">
+      <CollectionView.Header>
+        <Label Text="Potty/Diaper Records"
+               FontSize="Medium"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+      </CollectionView.Header>
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:PottyRecord">
+          <Border Margin="10"
+                  Padding="10">
+            <FlexLayout Direction="Row"
+                        JustifyContent="SpaceBetween">
+              <VerticalStackLayout>
+                <Label Text="{Binding Time, StringFormat='Diaper Change: {0:MMMM d, yyyy h:mm tt}'}"
+                       FontAttributes="Bold"
+                       FontSize="Medium" />
+                <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
+                <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
+              </VerticalStackLayout>
+              <HorizontalStackLayout Spacing="10">
+                <ImageButton Source="edit.png"
+                             Command="{Binding BindingContext.EditPottyCommand, Source={x:Reference pottyRecordsPage}}"
+                             CommandParameter="{Binding .}"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent" />
+                <ImageButton Source="delete.png"
+                             Command="{Binding BindingContext.DeletePottyCommand, Source={x:Reference pottyRecordsPage}}"
+                             CommandParameter="{Binding .}"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent" />
+              </HorizontalStackLayout>
+            </FlexLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+      <CollectionView.EmptyView>
+        <ContentView>
+          <Label Text="No Diaper Records Available"
+                 FontAttributes="Bold"
+                 Margin="0,40,0,0"
+                 HorizontalOptions="Center"
+                 VerticalOptions="End" />
+        </ContentView>
+      </CollectionView.EmptyView>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

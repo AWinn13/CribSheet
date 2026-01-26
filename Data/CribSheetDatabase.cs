@@ -26,6 +26,12 @@ namespace CribSheet.Data
       return await database.InsertAsync(baby);
     }
 
+    public async Task<int> UpdateBabyAsync(Baby baby)
+    {
+      await Init();
+      return await database.UpdateAsync(baby);
+    }
+
     public async Task<List<Baby>> GetBabiesAsync()
     {
       await Init();
@@ -78,6 +84,18 @@ namespace CribSheet.Data
     {
       await Init();
       return await database.InsertAsync(sleepRecord);
+    }
+
+    public async Task<int> DeleteSleepRecordAsync(SleepRecord sleepRecord)
+    {
+      await Init();
+      return await database.DeleteAsync(sleepRecord);
+    }
+
+    public async Task<int> DeletePottyRecordAsync(PottyRecord pottyRecord)
+    {
+      await Init();
+      return await database.DeleteAsync(pottyRecord);
     }
   }
 }

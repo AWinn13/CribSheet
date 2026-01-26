@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace CribSheet.ViewModels
 {
-  public partial class NewSleepRecordViewModel : ObservableObject, IQueryAttributable
+  public partial class NewSleepRecordViewModel : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
@@ -134,6 +134,21 @@ namespace CribSheet.ViewModels
     }
 
     [RelayCommand]
+    private void ResetTimer()
+    {
+      if (IsTimerRunning)
+      {
+        StopTimer();
+      }
+      _stopwatch.Reset();
+      ElapsedTime = "00:00:00";
+      TimerStatus = "Timer not started";
+      _timerStartTime = null;
+      OnPropertyChanged(nameof(CanStartTimer));
+      OnPropertyChanged(nameof(CanEditTimes));
+    }
+
+    [RelayCommand]
     private async Task SaveSleep()
     {
       if (!ValidateForm())
@@ -153,7 +168,7 @@ namespace CribSheet.ViewModels
       }
       catch (Exception ex)
       {
-        await Shell.Current.DisplayAlert("Error",
+        await Shell.Current.DisplayAlertAsync("Error",
           $"Failed to save sleep record: {ex.Message}", "OK");
       }
     }
@@ -224,11 +239,6 @@ namespace CribSheet.ViewModels
           : Enum.Parse<WakeReason>(SelectedWakeReason),
         Notes = Notes
       };
-    }
-
-    private async Task NavigateBack()
-    {
-      await Shell.Current.GoToAsync("..");
     }
 
     #endregion

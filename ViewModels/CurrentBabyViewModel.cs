@@ -3,43 +3,48 @@ using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
 using System.Collections.ObjectModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CribSheet.ViewModels
 {
-  public partial class CurrentBabyViewModel : ObservableObject, IQueryAttributable
+  public partial class CurrentBabyViewModel(CribSheetDatabase database) : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
-    private readonly CribSheetDatabase _database;
+    private readonly CribSheetDatabase _database = database;
 
     #endregion
-
     #region Constructor
-
-    public CurrentBabyViewModel(CribSheetDatabase database)
-    {
-      _database = database;
-    }
 
     #endregion
 
     #region Properties
 
+
     [ObservableProperty]
     private Baby? currentBaby;
 
-    [ObservableProperty]
-    private ObservableCollection<FeedingRecord>? feedingRecords;
-
-    [ObservableProperty]
-    private ObservableCollection<SleepRecord>? sleepRecords;
-
-    [ObservableProperty]
-    private ObservableCollection<PottyRecord>? pottyRecords;
-
-    public string Name => CurrentBaby?.Name ?? "Unknown Baby";
+    private string name;
+    public string Name
+    {
+      get => name;
+      set
+      {
+        if (name != value)
+        {
+          name = value;
+          OnPropertyChanged();
+        }
+      }
+    }
     public long BabyId => CurrentBaby?.BabyId ?? 0;
     public DateTime? Dob => CurrentBaby?.Dob;
+
+    [ObservableProperty]
+    private long weight;
+
+    [ObservableProperty]
+    private int ageInMonths;
 
     #endregion
 
@@ -50,13 +55,54 @@ namespace CribSheet.ViewModels
       if (query.ContainsKey("Baby"))
       {
         CurrentBaby = (Baby)query["Baby"];
-        _ = LoadBabyDataAsync();
+        if (CurrentBaby == null) return;
+        name = CurrentBaby.Name;
+        AgeInMonths = CurrentBaby.GetBabyAge();
+        RefreshProperties();
+        LoadBabyDataAsync();
       }
+
     }
 
     #endregion
 
     #region Commands
+
+    [RelayCommand]
+    private async Task NavigateToFeedings()
+    {
+      if (CurrentBaby == null) return;
+      await Shell.Current.GoToAsync(
+       nameof(Views.FeedingRecordsPage),
+       new Dictionary<string, object>
+       {
+          { "Baby", CurrentBaby}
+       });
+    }
+
+    [RelayCommand]
+    private async Task NavigateToSleep()
+    {
+      if (CurrentBaby == null) return;
+      await Shell.Current.GoToAsync(
+       nameof(Views.SleepRecordsPage),
+       new Dictionary<string, object>
+       {
+          { "Baby", CurrentBaby}
+       });
+    }
+
+    [RelayCommand]
+    private async Task NavigateToPotty()
+    {
+      if (CurrentBaby == null) return;
+      await Shell.Current.GoToAsync(
+       nameof(Views.PottyRecordsPage),
+       new Dictionary<string, object>
+       {
+          { "Baby", CurrentBaby}
+       });
+    }
 
     [RelayCommand]
     private async Task NavigateToNewFeeding()
@@ -98,24 +144,19 @@ namespace CribSheet.ViewModels
     }
 
     [RelayCommand]
-    private async Task DeleteFeeding(FeedingRecord record)
+    private async Task EditBaby()
     {
-      if (record == null) return;
+      if (CurrentBaby == null) return;
 
-      bool checkDelete = await Shell.Current.DisplayAlertAsync("Confirm", "Are you sure you want to delete this feeding record?", "Yes", "Cancel");
-      if (!checkDelete) return;
-
-      int reowRemoved = await _database.DeleteFeedingRecordAsync(record);
-      if (reowRemoved == 0)
-      {
-        await Shell.Current.DisplayAlertAsync("Error", "Failed to delete feeding record.", "OK");
-      }
-      else
-      {
-        FeedingRecords?.Remove(record);
-      }
-
+      await Shell.Current.GoToAsync(
+        nameof(Views.EditBabyPage),
+        new Dictionary<string, object>
+        {
+          { "Baby", CurrentBaby }
+        });
     }
+
+
     #endregion
 
     #region Data Methods
@@ -128,17 +169,11 @@ namespace CribSheet.ViewModels
     private async Task LoadBabyDataAsync()
     {
       if (CurrentBaby == null) return;
-
       try
       {
-        FeedingRecords = new ObservableCollection<FeedingRecord>(
-          await _database.GetFeedingRecordsAsync(CurrentBaby.BabyId));
-
-        SleepRecords = new ObservableCollection<SleepRecord>(
-          await _database.GetSleepRecordsAsync(CurrentBaby.BabyId));
-
-        PottyRecords = new ObservableCollection<PottyRecord>(
-          await _database.GetPottyRecordsAsync(CurrentBaby.BabyId));
+        Weight = CurrentBaby.Weight;
+        // Sleep and Potty records are now loaded in their respective dedicated pages
+        // This method is kept for future data loading if needed
       }
       catch (Exception ex)
       {
@@ -148,5 +183,10 @@ namespace CribSheet.ViewModels
     }
 
     #endregion
+
+    private void RefreshProperties()
+    {
+      OnPropertyChanged(nameof(Name));
+    }
   }
 }

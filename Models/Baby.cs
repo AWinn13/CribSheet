@@ -16,33 +16,26 @@ namespace CribSheet.Models
 
     public string? Name { get; set; }
 
-    public long? Weight { get; set; }
+    public long Weight { get; set; }
 
     public DateTime? Dob { get; set; } // date only in DB; DateTime works fine
 
     [Ignore]
     public int? Age { get => GetBabyAge(); }
 
-        // Navigation
 
-        //public List<BabyUser> BabyUsers { get; set; } = new();
-
-
-        //public List<FeedingRecord> FeedingRecords { get; set; } = new();
-
-        //public List<SleepRecord> SleepRecords { get; set; } = new();
-
-        public int GetBabyAge()
+    public int GetBabyAge()
     {
-      if (Dob == null)
-      {
-        return -1;
-      }
-      var today = DateTime.Today;
-      var age = today.Year - Dob.Value.Year;
-      if (Dob.Value.Date > today.AddMonths(-age * 12)) age--;
-      // if (Dob.Value.Date > today.AddYears(-age)) age--;
-      return age;
+      var today =  DateTime.Today;
+
+      int months = (today.Year - Dob.Value.Year) * 12
+                 + today.Month - Dob.Value.Month;
+
+      // If we haven't reached the birth day this month yet, subtract one month
+      if (today.Day < Dob.Value.Day)
+        months--;
+
+      return Math.Max(months, 0);
     }
   }
 }

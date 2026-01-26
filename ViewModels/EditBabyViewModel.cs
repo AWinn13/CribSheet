@@ -1,22 +1,23 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
 
 namespace CribSheet.ViewModels
 {
-  public partial class BabyViewModel : BaseViewModel
+  public partial class EditBabyViewModel : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
     private readonly CribSheetDatabase _database;
     private double weight;
+    private Baby? _currentBaby;
 
     #endregion
 
     #region Constructor
 
-    public BabyViewModel(CribSheetDatabase database)
+    public EditBabyViewModel(CribSheetDatabase database)
     {
       _database = database;
     }
@@ -39,34 +40,58 @@ namespace CribSheet.ViewModels
 
     #endregion
 
+    #region Navigation
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+      if (query.ContainsKey("Baby"))
+      {
+        _currentBaby = (Baby)query["Baby"];
+        LoadBabyData();
+      }
+    }
+
+    #endregion
+
     #region Commands
 
     [RelayCommand]
-    private async Task AddBaby()
+    private async Task UpdateBaby()
     {
       if (!ValidateForm())
         return;
 
       try
       {
-        var baby = CreateBaby();
-        var result = await _database.AddBabyAsync(baby);
+        if (_currentBaby == null) return;
+
+        _currentBaby.Name = Name;
+        _currentBaby.Dob = BirthDate;
+        _currentBaby.Weight = (long)((Lbs * 16) + Oz);
+
+        var result = await _database.UpdateBabyAsync(_currentBaby);
 
         if (result == 1)
         {
-          await NavigateToHomePage();
+          await NavigateBackWithBaby();
         }
         else
         {
           await Shell.Current.DisplayAlertAsync("Error",
-            "Failed to add baby to database.", "OK");
+            "Failed to update baby information.", "OK");
         }
       }
       catch (Exception ex)
       {
         await Shell.Current.DisplayAlertAsync("Error",
-          $"Failed to add baby: {ex.Message}", "OK");
+          $"Failed to update baby: {ex.Message}", "OK");
       }
+    }
+
+    [RelayCommand]
+    private async Task Cancel()
+    {
+      await NavigateBackWithBaby();
     }
 
     #endregion
@@ -105,7 +130,7 @@ namespace CribSheet.ViewModels
     {
       if (string.IsNullOrWhiteSpace(value))
       {
-        AddError(nameof(Name), "Name cannot be empty.");
+       AddError(nameof(Name), "Name cannot be empty.");
       }
       else
       {
@@ -142,20 +167,25 @@ namespace CribSheet.ViewModels
 
     #region Private Methods
 
-    private Baby CreateBaby()
+    private void LoadBabyData()
     {
-      return new Baby
-      {
-        CreatedAt = DateTime.Now,
-        Dob = BirthDate,
-        Name = Name,
-        Weight = (long)((Lbs * 16) + Oz)
-      };
+      if (_currentBaby == null) return;
+
+      Name = _currentBaby.Name ?? string.Empty;
+      BirthDate = _currentBaby.Dob ?? DateTime.Now;
+
+      // Convert weight from ounces to pounds and ounces
+      long totalOunces = _currentBaby.Weight;
+      Lbs = totalOunces / 16;
+      Oz = totalOunces % 16;
     }
 
-    private async Task NavigateToHomePage()
+    private async Task NavigateBackWithBaby()
     {
-      await Shell.Current.GoToAsync("//HomePage");
+      await NavigateBack(new Dictionary<string, object>
+       {
+          { "Baby", _currentBaby }
+       });
     }
 
     #endregion

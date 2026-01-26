@@ -377,11 +377,10 @@
             </VisualStateGroupList>
         </Setter>
     </Style>
-  
-    
-    <Style TargetType="TitleBar">
-        <Setter Property="MinimumHeightRequest" Value="32"/>
-        <Setter Property="VisualStateManager.VisualStateGroups">
+  <Style TargetType="TitleBar">
+    <Setter Property="IsVisible"
+            Value="False" />
+    <!--<Setter Property="VisualStateManager.VisualStateGroups"/>
             <VisualStateGroupList>
                 <VisualStateGroup x:Name="TitleActiveStates">
                     <VisualState x:Name="TitleBarTitleActive">
@@ -399,7 +398,7 @@
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateGroupList>
-        </Setter>
+        </Setter>-->
     </Style>
     
     
@@ -409,25 +408,25 @@
     </Style>
   <Style TargetType="Shell"
          ApplyToDerivedTypes="True">
-    <Setter Property="Shell.BackgroundColor"
+    <Setter Property="BackgroundColor"
             Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
-    <Setter Property="Shell.TabBarIsVisible"
-            Value="False" />
-    <Setter Property="Shell.TitleColor"
+    <Setter Property="TabBarIsVisible"
+            Value="True" />
+    <Setter Property="TitleColor"
             Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
-    <Setter Property="Shell.DisabledColor"
+    <Setter Property="DisabledColor"
             Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-    <Setter Property="Shell.UnselectedColor"
+    <Setter Property="UnselectedColor"
             Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray200}}" />
-    <Setter Property="Shell.NavBarHasShadow"
+    <Setter Property="NavBarHasShadow"
             Value="False" />
-    <Setter Property="Shell.TabBarBackgroundColor"
+    <Setter Property="TabBarBackgroundColor"
             Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
-    <Setter Property="Shell.TabBarForegroundColor"
+    <Setter Property="TabBarForegroundColor"
             Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Primary}}" />
-    <Setter Property="Shell.TabBarTitleColor"
+    <Setter Property="TabBarTitleColor"
             Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Primary}}" />
-    <Setter Property="Shell.TabBarUnselectedColor"
+    <Setter Property="TabBarUnselectedColor"
             Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
     
   </Style>

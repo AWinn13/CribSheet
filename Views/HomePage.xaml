@@ -3,12 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:CribSheet.Models"
              x:Class="CribSheet.Views.HomePage"
-             Title="HomePage"
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              x:DataType="viewModels:HomeViewModel">
   <VerticalStackLayout>
-    <Button Text="Add Baby"
-            Command="{Binding AddNewBabyCommand}" />
     <CollectionView ItemsSource="{Binding Babies}"
                     EmptyView="No Babies added yet, click above to add a baby"
                     SelectionMode="Single"
@@ -16,7 +13,7 @@
       <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:Baby">
           <Border Margin="10"
-                  Padding="10" >
+                  Padding="10">
             <VerticalStackLayout>
               <Label Text="{Binding Name}"
                      FontAttributes="Bold"
@@ -28,5 +25,11 @@
         </DataTemplate>
       </CollectionView.ItemTemplate>
     </CollectionView>
+    <Button Margin="15"
+            WidthRequest="300"
+            HeightRequest="100"
+            Text="Add Baby"
+            FontSize="Medium"
+            Command="{Binding AddNewBabyCommand}" />
   </VerticalStackLayout>
 </ContentPage>

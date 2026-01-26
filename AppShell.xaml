@@ -4,22 +4,48 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:CribSheet"
        xmlns:views="clr-namespace:CribSheet.Views"
-       Title="CribSheet">
+       Title="CribSheet"
+       IconImageSource="appicon.png">
+  <!--<Shell.TitleView>
+    <TitleBar IsEnabled="True"
+              IsVisible="True"
+              ForegroundColor="Transparent" >
+      <TitleBar.Content>
+        <Image Source="titleicon.png"
+               Aspect="Fill"
+               MinimumHeightRequest="145"
+               MinimumWidthRequest="345"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />
+      </TitleBar.Content>
+    </TitleBar>
+  </Shell.TitleView>-->
   <ShellContent Title="Login"
                 ContentTemplate="{DataTemplate views:LoginPage}"
-                Route="LoginPage" FlyoutItemIsVisible="False" />
+                Route="LoginPage"
+               />
   <ShellContent Title="Set Up Pin"
                 ContentTemplate="{DataTemplate views:SetPinPage}"
                 Route="SetPinPage"
-                FlyoutItemIsVisible="False" />
+                />
+  <TabBar  >
+    <Tab Icon="pediatrics.png">
+    <ShellContent Title="Home"
+                  ContentTemplate="{DataTemplate views:HomePage}"
+                  Route="HomePage" />
+    </Tab>
+    <Tab Icon="add.png" Title="Add">
+      <ShellContent Title="Add a Baby"
+                    ContentTemplate="{DataTemplate views:AddBabyPage}"
+                    Route="AddBabyPage" />
+    </Tab>
+    <Tab Title="Records" Icon="note_add.png">
+      <ShellContent Title="Baby's Records"
+                    ContentTemplate="{DataTemplate views:CurrentBabyPage}"
+                    Route="CurrentBabyPage" />
+    </Tab>
+
   
-  <ShellContent Title="Home"
-                ContentTemplate="{DataTemplate views:HomePage}"
-                Route="HomePage" />
-  <ShellContent Title="Add a Baby"
-                ContentTemplate="{DataTemplate views:AddBabyPage}"
-                Route="AddBabyPage" />
-  <ShellContent Title="Baby's Records"
-                ContentTemplate="{DataTemplate views:CurrentBabyPage}"
-                Route="CurrentBabyPage" />
+  
+    </TabBar>
 </Shell>
