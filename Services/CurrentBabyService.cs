@@ -2,7 +2,7 @@ using CribSheet.Models;
 
 namespace CribSheet.Services
 {
-  public class CurrentBaby : ICurrentBaby
+  public class CurrentBabyService : ICurrentBaby
   {
     public long BabyId { get; set; } = -1;
     public Baby? SelectedBaby { get; set; }

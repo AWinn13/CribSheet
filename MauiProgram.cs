@@ -35,7 +35,7 @@ namespace CribSheet
                 });
       // Register Services
       builder.Services.AddSingleton<CribSheetDatabase>();
-      builder.Services.AddSingleton<ICurrentBaby, CurrentBaby>();
+      builder.Services.AddSingleton<ICurrentBaby, CurrentBabyService>();
 
 
       // Register ViewModels
