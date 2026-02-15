@@ -23,7 +23,7 @@
     </Style>
 
     <Style TargetType="Button">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDark}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}" />
         <Setter Property="FontFamily" Value="LatoRegular"/>
         <Setter Property="FontSize" Value="14"/>
@@ -413,11 +413,9 @@
     <Setter Property="TabBarIsVisible"
             Value="True" />
     <Setter Property="TitleColor"
-            Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
+            Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource PrimaryDarkText}}" />
     <Setter Property="DisabledColor"
             Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-    <Setter Property="UnselectedColor"
-            Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray200}}" />
     <Setter Property="NavBarHasShadow"
             Value="False" />
     <Setter Property="TabBarBackgroundColor"
@@ -426,8 +424,5 @@
             Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Primary}}" />
     <Setter Property="TabBarTitleColor"
             Value="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource Primary}}" />
-    <Setter Property="TabBarUnselectedColor"
-            Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
-    
   </Style>
 </ResourceDictionary>

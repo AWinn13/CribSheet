@@ -2,10 +2,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 
 namespace CribSheet.ViewModels
 {
-  public partial class EditBabyViewModel : BaseViewModel, IQueryAttributable
+  public partial class EditBabyViewModel : BaseViewModel
   {
     #region Fields
 
@@ -17,9 +18,12 @@ namespace CribSheet.ViewModels
 
     #region Constructor
 
-    public EditBabyViewModel(CribSheetDatabase database)
+    public EditBabyViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
     {
       _database = database;
+      _currentBaby = CurrentBabyService.SelectedBaby;
+      LoadBabyData();
     }
 
     #endregion
@@ -37,19 +41,6 @@ namespace CribSheet.ViewModels
 
     [ObservableProperty]
     private double oz;
-
-    #endregion
-
-    #region Navigation
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("Baby"))
-      {
-        _currentBaby = (Baby)query["Baby"];
-        LoadBabyData();
-      }
-    }
 
     #endregion
 

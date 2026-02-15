@@ -1,21 +1,25 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
-using System.Collections.ObjectModel;
-using static System.Net.Mime.MediaTypeNames;
+using CribSheet.Services;
 
 namespace CribSheet.ViewModels
 {
-  public partial class CurrentBabyViewModel(CribSheetDatabase database) : BaseViewModel, IQueryAttributable
+  public partial class CurrentBabyViewModel : BaseViewModel
   {
     #region Fields
 
-    private readonly CribSheetDatabase _database = database;
+    private readonly CribSheetDatabase _database;
 
     #endregion
     #region Constructor
-
+    public CurrentBabyViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
+    {
+      _database = database;
+      _ = LoadBabyDataAsync();
+    }
     #endregion
 
     #region Properties
@@ -37,7 +41,7 @@ namespace CribSheet.ViewModels
         }
       }
     }
-    public long BabyId => CurrentBaby?.BabyId ?? 0;
+
     public DateTime? Dob => CurrentBaby?.Dob;
 
     [ObservableProperty]
@@ -46,23 +50,18 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private int ageInMonths;
 
+    [ObservableProperty]
+    private bool noFeedingExists;
+
+    [ObservableProperty]
+    private bool noSleepExists;
+
+    [ObservableProperty]
+    private bool noPottyExists;
+
     #endregion
 
     #region Navigation
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("Baby"))
-      {
-        CurrentBaby = (Baby)query["Baby"];
-        if (CurrentBaby == null) return;
-        name = CurrentBaby.Name;
-        AgeInMonths = CurrentBaby.GetBabyAge();
-        RefreshProperties();
-        LoadBabyDataAsync();
-      }
-
-    }
 
     #endregion
 
@@ -71,89 +70,43 @@ namespace CribSheet.ViewModels
     [RelayCommand]
     private async Task NavigateToFeedings()
     {
-      if (CurrentBaby == null) return;
-      await Shell.Current.GoToAsync(
-       nameof(Views.FeedingRecordsPage),
-       new Dictionary<string, object>
-       {
-          { "Baby", CurrentBaby}
-       });
+      await Shell.Current.GoToAsync(nameof(Views.FeedingRecordsPage));
     }
 
     [RelayCommand]
     private async Task NavigateToSleep()
     {
-      if (CurrentBaby == null) return;
-      await Shell.Current.GoToAsync(
-       nameof(Views.SleepRecordsPage),
-       new Dictionary<string, object>
-       {
-          { "Baby", CurrentBaby}
-       });
+      await Shell.Current.GoToAsync(nameof(Views.SleepRecordsPage));
     }
 
     [RelayCommand]
     private async Task NavigateToPotty()
     {
-      if (CurrentBaby == null) return;
-      await Shell.Current.GoToAsync(
-       nameof(Views.PottyRecordsPage),
-       new Dictionary<string, object>
-       {
-          { "Baby", CurrentBaby}
-       });
+      await Shell.Current.GoToAsync(nameof(Views.PottyRecordsPage));
     }
 
     [RelayCommand]
     private async Task NavigateToNewFeeding()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.NewFeedingRecordPage),
-        new Dictionary<string, object>
-        {
-          { "BabyId", CurrentBaby.BabyId }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.NewFeedingRecordPage));
     }
 
     [RelayCommand]
     private async Task NavigateToNewPotty()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.NewPottyRecordPage),
-        new Dictionary<string, object>
-        {
-          { "BabyId", CurrentBaby.BabyId }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.NewPottyRecordPage));
     }
 
     [RelayCommand]
     private async Task NavigateToNewSleep()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.NewSleepRecordPage),
-        new Dictionary<string, object>
-        {
-          { "BabyId", CurrentBaby.BabyId }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.NewSleepRecordPage));
     }
 
     [RelayCommand]
     private async Task EditBaby()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.EditBabyPage),
-        new Dictionary<string, object>
-        {
-          { "Baby", CurrentBaby }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.EditBabyPage));
     }
 
 
@@ -168,12 +121,15 @@ namespace CribSheet.ViewModels
 
     private async Task LoadBabyDataAsync()
     {
-      if (CurrentBaby == null) return;
+      CurrentBaby = await _database.GetBabyAsync(CurrentBabyService.BabyId);
+      if (CurrentBaby.Name == null) return;
+      Name = CurrentBaby.Name;
       try
       {
+        NoFeedingExists = !await _database.FeedingRecordsExist(CurrentBaby.BabyId);
+        NoSleepExists = !await _database.SleepingRecordsExist(CurrentBaby.BabyId);
+        NoPottyExists = !await _database.PottyRecordsExist(CurrentBaby.BabyId);
         Weight = CurrentBaby.Weight;
-        // Sleep and Potty records are now loaded in their respective dedicated pages
-        // This method is kept for future data loading if needed
       }
       catch (Exception ex)
       {
@@ -183,6 +139,7 @@ namespace CribSheet.ViewModels
     }
 
     #endregion
+
 
     private void RefreshProperties()
     {

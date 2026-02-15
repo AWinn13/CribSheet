@@ -4,8 +4,8 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:CribSheet"
        xmlns:views="clr-namespace:CribSheet.Views"
-       Title="CribSheet"
-       IconImageSource="appicon.png">
+       Shell.FlyoutBehavior="Disabled"
+       Title="Crib Sheet">
   <!--<Shell.TitleView>
     <TitleBar IsEnabled="True"
               IsVisible="True"
@@ -20,32 +20,36 @@
       </TitleBar.Content>
     </TitleBar>
   </Shell.TitleView>-->
-  <ShellContent Title="Login"
-                ContentTemplate="{DataTemplate views:LoginPage}"
-                Route="LoginPage"
-               />
-  <ShellContent Title="Set Up Pin"
-                ContentTemplate="{DataTemplate views:SetPinPage}"
-                Route="SetPinPage"
-                />
-  <TabBar  >
-    <Tab Icon="pediatrics.png">
-    <ShellContent Title="Home"
-                  ContentTemplate="{DataTemplate views:HomePage}"
-                  Route="HomePage" />
+  <TabBar>
+    <Tab Icon="home.png"
+         Title="Home" IsVisible="True" IsEnabled="True" >
+      <ShellContent Title="Home"
+                    ContentTemplate="{DataTemplate views:HomePage}"
+                    Route="HomePage"  />
     </Tab>
-    <Tab Icon="add.png" Title="Add">
+    <Tab Icon="note_add.png"
+         Title="Baby's Records">
+      <ShellContent Title="Baby's Records"
+                    ContentTemplate="{DataTemplate views:EditBabyPage}"
+                    Route="EditBaby" />
+    </Tab>
+    <Tab Icon="add.png"
+         Title="Add A Baby">
       <ShellContent Title="Add a Baby"
                     ContentTemplate="{DataTemplate views:AddBabyPage}"
                     Route="AddBabyPage" />
     </Tab>
-    <Tab Title="Records" Icon="note_add.png">
+    <Tab Title="Records"
+         Icon="child.png">
       <ShellContent Title="Baby's Records"
                     ContentTemplate="{DataTemplate views:CurrentBabyPage}"
                     Route="CurrentBabyPage" />
+      <ShellContent Title="Feeding Records"
+                    ContentTemplate="{DataTemplate views:FeedingRecordsPage}"
+                    Route="FeedingRecords" />
+      <ShellContent Title="Sleep Records"
+                    ContentTemplate="{DataTemplate views:SleepRecordsPage}"
+                    Route="SleepingingRecords" />
     </Tab>
-
-  
-  
-    </TabBar>
+  </TabBar>
 </Shell>

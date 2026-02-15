@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+using CribSheet.Services;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +9,17 @@ namespace CribSheet.ViewModels
 {
   public partial class BaseViewModel : ObservableObject, INotifyDataErrorInfo
   {
+    #region Service
+
+    protected readonly ICurrentBaby CurrentBabyService;
+
+    protected BaseViewModel(ICurrentBaby currentBabyService)
+    {
+      CurrentBabyService = currentBabyService;
+    }
+
+    #endregion
+
     #region INotifyDataErrorInfo Implementation
 
     private readonly Dictionary<string, List<string>> _errors = new();

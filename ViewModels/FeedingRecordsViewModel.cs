@@ -1,46 +1,34 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
-using System;
-using System.Collections.Generic;
+using CribSheet.Services;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace CribSheet.ViewModels
 {
-  public partial class FeedingRecordsViewModel(CribSheetDatabase database) : BaseViewModel, IQueryAttributable
+  public partial class FeedingRecordsViewModel : BaseViewModel
   {
-    private readonly CribSheetDatabase _database = database;
+    private readonly CribSheetDatabase _database;
 
-    private int babyId;
+    public FeedingRecordsViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
+    {
+      _database = database;
+      CurrentBaby = CurrentBabyService.SelectedBaby;
+      _ = LoadBabyDataAsync();
+    }
 
     [ObservableProperty]
     private Baby? currentBaby;
 
     [ObservableProperty]
     private ObservableCollection<FeedingRecord>? feedingRecords;
-    public async void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("Baby"))
-      {
-        CurrentBaby = (Baby)query["Baby"];
-        await LoadBabyDataAsync();
-      }
-
-    }
 
     [RelayCommand]
     private async Task NavigateToNewFeeding()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.NewFeedingRecordPage),
-        new Dictionary<string, object>
-        {
-          { "BabyId", CurrentBaby.BabyId }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.NewFeedingRecordPage));
     }
 
     private async Task LoadBabyDataAsync()

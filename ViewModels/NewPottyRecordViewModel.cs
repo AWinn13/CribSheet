@@ -2,22 +2,23 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class NewPottyRecordViewModel : BaseViewModel, IQueryAttributable
+  public partial class NewPottyRecordViewModel : BaseViewModel
   {
     #region Fields
 
     private readonly CribSheetDatabase _database;
-    private long _babyId;
 
     #endregion
 
     #region Constructor
 
-    public NewPottyRecordViewModel(CribSheetDatabase database)
+    public NewPottyRecordViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
     {
       _database = database;
       InitializeDefaults();
@@ -40,18 +41,6 @@ namespace CribSheet.ViewModels
 
     [ObservableProperty]
     private string? notes;
-
-    #endregion
-
-    #region Navigation
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("BabyId"))
-      {
-        _babyId = (long)query["BabyId"];
-      }
-    }
 
     #endregion
 
@@ -107,7 +96,7 @@ namespace CribSheet.ViewModels
     {
       return new PottyRecord
       {
-        BabyId = _babyId,
+        BabyId = CurrentBabyService.BabyId,
         Time = PottyDate.Add(PottyTime),
         Type = Enum.Parse<DiaperType>(SelectedDiaperType),
         Notes = Notes

@@ -2,17 +2,17 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace CribSheet.ViewModels
 {
-  public partial class NewSleepRecordViewModel : BaseViewModel, IQueryAttributable
+  public partial class NewSleepRecordViewModel : BaseViewModel
   {
     #region Fields
 
     private readonly CribSheetDatabase _database;
-    private long _babyId;
     private DateTime? _timerStartTime;
     private Stopwatch _stopwatch;
     private IDispatcherTimer? _timer;
@@ -21,7 +21,8 @@ namespace CribSheet.ViewModels
 
     #region Constructor
 
-    public NewSleepRecordViewModel(CribSheetDatabase database)
+    public NewSleepRecordViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
     {
       _database = database;
       _stopwatch = new Stopwatch();
@@ -67,18 +68,6 @@ namespace CribSheet.ViewModels
 
     public bool CanStartTimer => !IsTimerRunning;
     public bool CanEditTimes => !IsTimerRunning;
-
-    #endregion
-
-    #region Navigation
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("BabyId"))
-      {
-        _babyId = (long)query["BabyId"];
-      }
-    }
 
     #endregion
 
@@ -230,7 +219,7 @@ namespace CribSheet.ViewModels
 
       return new SleepRecord
       {
-        BabyId = _babyId,
+        BabyId = CurrentBabyService.BabyId,
         StartTime = startDateTime,
         EndTime = endDateTime > startDateTime ? endDateTime : (DateTime?)null,
         TypeOfSleep = Enum.Parse<SleepType>(SelectedSleepType ?? "Nap"),

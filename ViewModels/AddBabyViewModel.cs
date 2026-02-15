@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 
 namespace CribSheet.ViewModels
 {
@@ -16,7 +17,8 @@ namespace CribSheet.ViewModels
 
     #region Constructor
 
-    public BabyViewModel(CribSheetDatabase database)
+    public BabyViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
     {
       _database = database;
     }

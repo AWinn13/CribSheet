@@ -1,15 +1,13 @@
-﻿using CribSheet.Services;
+﻿
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CribSheet
 {
   public partial class App : Application
   {
-    private readonly IPinService _pinService;
-    public App(IPinService pinService)
+    public App()
     {
       InitializeComponent();
-      _pinService = pinService;
 
     }
 
@@ -22,13 +20,7 @@ namespace CribSheet
     {
       MainThread.BeginInvokeOnMainThread(async () =>
       {
-         
-        //if (await _pinService.HasPinAsync())
-        //  await Shell.Current.GoToAsync("//LoginPage");
-        //else if (Preferences.Default.Get("RemindPinSetup", true))
-        //    await Shell.Current.GoToAsync("//SetPinPage");
-        //else
-            await Shell.Current.GoToAsync("//HomePage");
+        await Shell.Current.GoToAsync("//HomePage");
       });
     }
   }

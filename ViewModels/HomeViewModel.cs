@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace CribSheet.ViewModels
 {
@@ -13,13 +15,16 @@ namespace CribSheet.ViewModels
     private readonly CribSheetDatabase _database;
     private Baby? selectedBaby;
 
+
     #endregion
 
     #region Constructor
 
-    public HomeViewModel(CribSheetDatabase database)
+    public HomeViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
     {
       _database = database;
+      CurrentBabyService.Clear();
       _ = LoadBabiesAsync();
     }
 
@@ -37,8 +42,8 @@ namespace CribSheet.ViewModels
       {
         if (SetProperty(ref selectedBaby, value) && value != null)
         {
-          _ = NavigateToBaby(value);
           SetProperty(ref selectedBaby, null);
+          OnPropertyChanged(nameof(SelectedBaby));
         }
       }
     }
@@ -48,7 +53,7 @@ namespace CribSheet.ViewModels
     #region Commands
 
     [RelayCommand]
-    private async Task AddNewBaby()
+    private static async Task AddNewBaby()
     {
       await Shell.Current.GoToAsync("//AddBabyPage");
     }
@@ -80,19 +85,23 @@ namespace CribSheet.ViewModels
 
     #region Navigation
 
-    private async Task NavigateToBaby(Baby baby)
+    private static async Task NavigateToBaby(Baby baby)
     {
       if (baby == null) return;
 
-      await Shell.Current.GoToAsync(
-        "//CurrentBabyPage",
-        true,
-        new Dictionary<string, object>
-        {
-          { "Baby", baby }
-        });
+      await Shell.Current.GoToAsync("//CurrentBabyPage");
     }
 
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+      base.OnPropertyChanged(e);
+      if (e.PropertyName == nameof(SelectedBaby) && SelectedBaby != null)
+      {
+        CurrentBabyService.SelectedBaby = SelectedBaby;
+        CurrentBabyService.BabyId = SelectedBaby.BabyId;
+        _ = NavigateToBaby(SelectedBaby);
+      }
+    }
     #endregion
   }
 }

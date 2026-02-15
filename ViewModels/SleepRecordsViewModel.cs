@@ -2,13 +2,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
+using CribSheet.Services;
 using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class SleepRecordsViewModel(CribSheetDatabase database) : BaseViewModel, IQueryAttributable
+  public partial class SleepRecordsViewModel : BaseViewModel
   {
-    private readonly CribSheetDatabase _database = database;
+    private readonly CribSheetDatabase _database;
+
+    public SleepRecordsViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
+      : base(currentBabyService)
+    {
+      _database = database;
+      CurrentBaby = CurrentBabyService.SelectedBaby;
+      _ = LoadBabyDataAsync();
+    }
 
     [ObservableProperty]
     private Baby? currentBaby;
@@ -16,26 +25,10 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private ObservableCollection<SleepRecord>? sleepRecords;
 
-    public async void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-      if (query.ContainsKey("Baby"))
-      {
-        CurrentBaby = (Baby)query["Baby"];
-        await LoadBabyDataAsync();
-      }
-    }
-
     [RelayCommand]
     private async Task NavigateToNewSleep()
     {
-      if (CurrentBaby == null) return;
-
-      await Shell.Current.GoToAsync(
-        nameof(Views.NewSleepRecordPage),
-        new Dictionary<string, object>
-        {
-          { "BabyId", CurrentBaby.BabyId }
-        });
+      await Shell.Current.GoToAsync(nameof(Views.NewSleepRecordPage));
     }
 
     private async Task LoadBabyDataAsync()
