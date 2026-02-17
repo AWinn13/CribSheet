@@ -19,6 +19,7 @@ namespace CribSheet.ViewModels
     {
       _database = database;
       _ = LoadBabyDataAsync();
+      name = string.Empty;
     }
     #endregion
 

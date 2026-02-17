@@ -8,6 +8,10 @@
              Title="FeedingRecordsPage"
              x:Name="feedingRecordsPage">
     <VerticalStackLayout>
+    <Button Text="Export to CSV"
+            Command="{Binding ExportToCsvCommand}"
+            HorizontalOptions="End"
+            Margin="10" />
     <CollectionView ItemsSource="{Binding FeedingRecords}">
       <CollectionView.Header>
         <Label Text="Feeding Records"

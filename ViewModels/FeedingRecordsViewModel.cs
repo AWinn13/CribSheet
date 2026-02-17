@@ -4,6 +4,7 @@ using CribSheet.Data;
 using CribSheet.Models;
 using CribSheet.Services;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace CribSheet.ViewModels
 {
@@ -44,6 +45,42 @@ namespace CribSheet.ViewModels
       {
         await Shell.Current.DisplayAlertAsync("Error",
           $"Failed to load baby data: {ex.Message}", "OK");
+      }
+    }
+
+    [RelayCommand]
+    private async Task ExportToCsv()
+    {
+      if (FeedingRecords == null || FeedingRecords.Count == 0)
+      {
+        await Shell.Current.DisplayAlertAsync("Info", "No feeding records to export.", "OK");
+        return;
+      }
+
+      try
+      {
+        var csv = new StringBuilder();
+        csv.AppendLine("FeedingId,BabyId,Time,Type,AmountMl,DurationMinutes,Notes");
+
+        foreach (var record in FeedingRecords)
+        {
+          var notes = record.Notes?.Replace("\"", "\"\"") ?? "";
+          csv.AppendLine($"{record.FeedingId},{record.BabyId},{record.Time:yyyy-MM-dd HH:mm:ss},{record.Type},{record.AmountMl},{record.DurationMinutes},\"{notes}\"");
+        }
+
+        var fileName = $"FeedingRecords_{CurrentBaby?.Name}_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+        var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+        await File.WriteAllTextAsync(filePath, csv.ToString());
+
+        await Share.RequestAsync(new ShareFileRequest
+        {
+          Title = "Export Feeding Records",
+          File = new ShareFile(filePath)
+        });
+      }
+      catch (Exception ex)
+      {
+        await Shell.Current.DisplayAlertAsync("Error", $"Failed to export: {ex.Message}", "OK");
       }
     }
 
