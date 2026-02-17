@@ -1,13 +1,12 @@
-using CribSheet.Data;
+using CribSheet.ViewModels;
 
 namespace CribSheet.Views;
 
 public partial class HomePage : ContentPage
 {
-  public HomePage(CribSheetDatabase db)
+  public HomePage(HomeViewModel viewModel)
   {
     InitializeComponent();
-    BindingContext = new ViewModels.HomeViewModel(db);
+    BindingContext = viewModel;
   }
-
 }

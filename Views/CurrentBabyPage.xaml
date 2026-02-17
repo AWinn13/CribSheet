@@ -10,12 +10,11 @@
              x:DataType="viewModels:CurrentBabyViewModel">
   <ScrollView>
     <VerticalStackLayout  HorizontalOptions="Fill"
-                          VerticalOptions="Center" Spacing="15">
-      <Border >
-        <VerticalStackLayout HorizontalOptions="Fill"
+                          VerticalOptions="Center"
+                          Spacing="15">
+      <VerticalStackLayout HorizontalOptions="Fill"
                            VerticalOptions="Center"
                            Spacing="20">
-        
         <Label Text="{Binding Name}"
                FontSize="Large"
                FontAttributes="Bold"
@@ -25,18 +24,25 @@
                FontSize="Medium"
                VerticalOptions="Center"
                HorizontalOptions="Center" />
-        <Label Text="{Binding Weight, StringFormat='Weight: {0} lbs'}"
-               FontSize="Medium"
+        <Label FontSize="Medium"
                VerticalOptions="Center"
-               HorizontalOptions="Center" />
+               HorizontalOptions="Center">
+          <Label.FormattedText>
+            <FormattedString>
+              <Span Text="Weight: " />
+              <Span Text="{Binding Pounds}" />
+              <Span Text=" lbs " />
+              <Span Text="{Binding Ounces}" />
+              <Span Text=" oz" />
+            </FormattedString>
+          </Label.FormattedText>
+        </Label>
         <Button Text="Edit Baby Info"
                 WidthRequest="200"
                 Command="{Binding EditBabyCommand}"
                 VerticalOptions="Center"
                 HorizontalOptions="Center" />
-        
       </VerticalStackLayout>
-      </Border>
       <Grid ColumnDefinitions="*,*,*"
             RowDefinitions="*"
             ColumnSpacing="5">

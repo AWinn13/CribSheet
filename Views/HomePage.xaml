@@ -4,7 +4,11 @@
              xmlns:models="clr-namespace:CribSheet.Models"
              x:Class="CribSheet.Views.HomePage"
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:convert="clr-namespace:CribSheet.Converters"
              x:DataType="viewModels:HomeViewModel">
+  <ContentPage.Resources>
+    <convert:OzToLbsOzConverter x:Key="ozToLb" />
+  </ContentPage.Resources>
   <VerticalStackLayout>
     <CollectionView ItemsSource="{Binding Babies}"
                     EmptyView="No Babies added yet, click above to add a baby"
@@ -13,13 +17,15 @@
       <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:Baby">
           <Border Margin="10"
-                  Padding="10">
+                  Padding="10"
+                  StrokeThickness=".2"
+                  StrokeShape="RoundRectangle">
             <VerticalStackLayout>
               <Label Text="{Binding Name}"
                      FontAttributes="Bold"
                      FontSize="Medium" />
               <Label Text="{Binding Age, StringFormat='{0} Months Old'}" />
-              <Label Text="{Binding Weight, StringFormat='Weight: {0}'}" />
+              <Label Text="{Binding Weight, Converter={StaticResource ozToLb}}" />
             </VerticalStackLayout>
           </Border>
         </DataTemplate>

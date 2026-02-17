@@ -1,14 +1,12 @@
-using CribSheet.Data;
+using CribSheet.ViewModels;
 
 namespace CribSheet.Views;
 
 public partial class AddBabyPage : ContentPage
 {
-	public AddBabyPage(CribSheetDatabase db)
-	{
-		InitializeComponent();
-    BindingContext = new ViewModels.BabyViewModel(db);
-
+  public AddBabyPage(BabyViewModel viewModel)
+  {
+    InitializeComponent();
+    BindingContext = viewModel;
   }
-
 }

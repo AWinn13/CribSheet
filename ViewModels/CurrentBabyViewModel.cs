@@ -45,7 +45,10 @@ namespace CribSheet.ViewModels
     public DateTime? Dob => CurrentBaby?.Dob;
 
     [ObservableProperty]
-    private long weight;
+    private long pounds;
+
+    [ObservableProperty]
+    private long ounces;
 
     [ObservableProperty]
     private int ageInMonths;
@@ -122,14 +125,16 @@ namespace CribSheet.ViewModels
     private async Task LoadBabyDataAsync()
     {
       CurrentBaby = await _database.GetBabyAsync(CurrentBabyService.BabyId);
-      if (CurrentBaby.Name == null) return;
+      if (CurrentBaby.Name == null || CurrentBaby == null) return;
       Name = CurrentBaby.Name;
       try
       {
         NoFeedingExists = !await _database.FeedingRecordsExist(CurrentBaby.BabyId);
         NoSleepExists = !await _database.SleepingRecordsExist(CurrentBaby.BabyId);
         NoPottyExists = !await _database.PottyRecordsExist(CurrentBaby.BabyId);
-        Weight = CurrentBaby.Weight;
+        AgeInMonths = (int)CurrentBaby.Age;
+        Pounds = CurrentBaby.Weight / 16;
+        Ounces = CurrentBaby.Weight % 16;
       }
       catch (Exception ex)
       {
@@ -137,11 +142,10 @@ namespace CribSheet.ViewModels
           $"Failed to load baby data: {ex.Message}", "OK");
       }
     }
+        #endregion
 
-    #endregion
 
-
-    private void RefreshProperties()
+        private void RefreshProperties()
     {
       OnPropertyChanged(nameof(Name));
     }

@@ -67,6 +67,10 @@ namespace CribSheet.ViewModels
       try
       {
         var babyList = await _database.GetBabiesAsync();
+        foreach (var kid in babyList)
+        {
+          
+        }
         Babies = new ObservableCollection<Baby>(babyList);
       }
       catch (Exception ex)
