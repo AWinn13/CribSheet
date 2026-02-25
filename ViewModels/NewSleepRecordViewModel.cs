@@ -153,7 +153,7 @@ namespace CribSheet.ViewModels
       {
         var sleepRecord = CreateSleepRecord();
         await _database.AddSleepRecordAsync(sleepRecord);
-        await NavigateBack();
+        await NavigateBack(new Dictionary<string, object> { { "refresh", true } });
       }
       catch (Exception ex)
       {

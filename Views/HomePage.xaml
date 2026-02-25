@@ -5,11 +5,13 @@
              x:Class="CribSheet.Views.HomePage"
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:convert="clr-namespace:CribSheet.Converters"
-             x:DataType="viewModels:HomeViewModel">
+             x:DataType="viewModels:HomeViewModel"
+             SafeAreaEdges="All"
+             x:Name="homePage">
   <ContentPage.Resources>
     <convert:OzToLbsOzConverter x:Key="ozToLb" />
   </ContentPage.Resources>
-  <VerticalStackLayout>
+  <VerticalStackLayout Padding="10,0">
     <CollectionView ItemsSource="{Binding Babies}"
                     EmptyView="No Babies added yet, click above to add a baby"
                     SelectionMode="Single"
@@ -18,15 +20,26 @@
         <DataTemplate x:DataType="models:Baby">
           <Border Margin="10"
                   Padding="10"
-                  StrokeThickness=".2"
+                  StrokeThickness="1"
                   StrokeShape="RoundRectangle">
+            <FlexLayout JustifyContent="SpaceBetween" Direction="Row">
             <VerticalStackLayout>
               <Label Text="{Binding Name}"
                      FontAttributes="Bold"
                      FontSize="Medium" />
               <Label Text="{Binding Age, StringFormat='{0} Months Old'}" />
               <Label Text="{Binding Weight, Converter={StaticResource ozToLb}}" />
+              
             </VerticalStackLayout>
+              <ImageButton Source="delete.png"
+                           Command="{Binding BindingContext.DeleteBabyCommand, Source={x:Reference homePage}}"
+                           CommandParameter="{Binding .}"
+                           WidthRequest="44"
+                           HeightRequest="44"
+                           HorizontalOptions="End"
+                           VerticalOptions="Start"
+                           BackgroundColor="Transparent" />
+            </FlexLayout>
           </Border>
         </DataTemplate>
       </CollectionView.ItemTemplate>

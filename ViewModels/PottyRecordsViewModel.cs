@@ -25,11 +25,6 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private ObservableCollection<PottyRecord>? pottyRecords;
 
-    [RelayCommand]
-    private async Task NavigateToNewPotty()
-    {
-      await Shell.Current.GoToAsync(nameof(Views.NewPottyRecordPage));
-    }
 
     private async Task LoadBabyDataAsync()
     {

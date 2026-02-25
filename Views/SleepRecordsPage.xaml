@@ -6,8 +6,17 @@
              xmlns:models="clr-namespace:CribSheet.Models"
              x:DataType="viewModels:SleepRecordsViewModel"
              Title="Sleep Records"
-             x:Name="sleepRecordsPage">
-  <VerticalStackLayout>
+             x:Name="sleepRecordsPage"
+             SafeAreaEdges="All">
+  <VerticalStackLayout Padding="10,0">
+    <FlexLayout Direction="Row"
+                JustifyContent="SpaceBetween"
+                AlignItems="Center"
+                Margin="15">
+      <Button Text="Add Sleep Record"
+              Command="{Binding NavigateToNewSleepCommand}"
+              Margin="10" />
+    </FlexLayout>
     <CollectionView ItemsSource="{Binding SleepRecords}">
       <CollectionView.Header>
         <Label Text="Sleep Records"
@@ -34,16 +43,16 @@
                 <ImageButton Source="edit.png"
                              Command="{Binding BindingContext.EditSleepCommand, Source={x:Reference sleepRecordsPage}}"
                              CommandParameter="{Binding .}"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="44"
+                             HeightRequest="44"
                              HorizontalOptions="End"
                              VerticalOptions="Start"
                              BackgroundColor="Transparent" />
                 <ImageButton Source="delete.png"
                              Command="{Binding BindingContext.DeleteSleepCommand, Source={x:Reference sleepRecordsPage}}"
                              CommandParameter="{Binding .}"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="44"
+                             HeightRequest="44"
                              HorizontalOptions="End"
                              VerticalOptions="Start"
                              BackgroundColor="Transparent" />

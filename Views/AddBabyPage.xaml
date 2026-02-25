@@ -5,32 +5,79 @@
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="AddBabyPage"
-             x:DataType="viewModels:BabyViewModel">
-  <VerticalStackLayout>
-    <Entry Placeholder="Baby's Name"
-           Margin="20,10"
-           Text="{Binding Name}" />
-    <FlexLayout AlignContent="SpaceEvenly"
-                AlignItems="Center">
-      <Label Text="Date of Birth" />
-      <DatePicker Date="{Binding BirthDate}"
-                  MinimumDate="01/01/2000"
-                  MaximumDate="12/31/2026" />
-    </FlexLayout>
-    <Entry Placeholder="Pounds"
-           Keyboard="Numeric"
-           Text="{Binding Lbs}" />
-    <Entry Placeholder="Ounces"
-           Keyboard="Numeric"
-           Text="{Binding Oz}" />
-    <Button Text="Save Baby"
-            Margin="20,10"
-            Command="{Binding AddBabyCommand}"/>
-    <Label Text="ERROR"
-           TextColor="Red"
-           Margin="20,10"
-           FontSize="Header"
-           IsVisible="{Binding HasErrors}" />
-  </VerticalStackLayout>
+             Title="Add Baby"
+             x:DataType="viewModels:BabyViewModel"
+             SafeAreaEdges="All">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+      <!-- Date of Birth (shared for all babies) -->
+      <Label Text="Date of Birth" FontAttributes="Bold" />
+      <FlexLayout AlignItems="Center" Margin="10,0">
+        <DatePicker Date="{Binding BirthDate}"
+                    MinimumDate="01/01/2000"
+                    MaximumDate="12/31/2026" />
+      </FlexLayout>
+
+      <!-- Multiple babies toggle -->
+      <FlexLayout AlignItems="Center" Margin="0,5">
+        <CheckBox IsChecked="{Binding IsMultiple}" />
+        <Label Text="Multiple babies (twins, triplets, etc.)"
+               VerticalOptions="Center"
+               Margin="5,0" />
+      </FlexLayout>
+
+      <!-- Count picker — only visible when IsMultiple is checked -->
+      <VerticalStackLayout IsVisible="{Binding IsMultiple}" Margin="10,0">
+        <Label Text="Number of babies" FontAttributes="Bold" />
+        <Picker ItemsSource="{Binding MultipleCountOptions}"
+                SelectedItem="{Binding SelectedMultipleCount}"
+                Title="Select count" />
+      </VerticalStackLayout>
+
+      <!-- One form block per baby, driven by BabyEntries -->
+      <VerticalStackLayout BindableLayout.ItemsSource="{Binding BabyEntries}">
+        <BindableLayout.ItemTemplate>
+          <DataTemplate x:DataType="models:BabyFormEntry">
+            <Border Margin="0,8" Padding="15" StrokeShape="RoundRectangle 8">
+              <VerticalStackLayout Spacing="8">
+                <Label Text="{Binding Label}"
+                       FontAttributes="Bold"
+                       FontSize="Medium" />
+                <Entry Placeholder="Name"
+                       Text="{Binding Name}" />
+                <FlexLayout Direction="Row" AlignItems="Center">
+                  <Entry Placeholder="lbs"
+                         Keyboard="Numeric"
+                         Text="{Binding Lbs}"
+                         WidthRequest="80"
+                         Margin="0,0,8,0" />
+                  <Label Text="lbs" VerticalOptions="Center" Margin="0,0,15,0" />
+                  <Entry Placeholder="oz"
+                         Keyboard="Numeric"
+                         Text="{Binding Oz}"
+                         WidthRequest="80"
+                         Margin="0,0,8,0" />
+                  <Label Text="oz" VerticalOptions="Center" />
+                </FlexLayout>
+              </VerticalStackLayout>
+            </Border>
+          </DataTemplate>
+        </BindableLayout.ItemTemplate>
+      </VerticalStackLayout>
+
+      <!-- Save button -->
+      <Button Text="Save"
+              Margin="0,10"
+              Command="{Binding AddBabyCommand}" />
+
+      <!-- Error indicator -->
+      <Label Text="Please check your entries and try again."
+             TextColor="Red"
+             Margin="0,5"
+             FontSize="Small"
+             IsVisible="{Binding HasErrors}" />
+
+    </VerticalStackLayout>
+  </ScrollView>
 </ContentPage>

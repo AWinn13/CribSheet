@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.WeightRecordsPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             x:DataType="viewModels:WeightRecordsViewModel"
+             Title="WeightRecordsPage"
+             x:Name="weightRecordsPage"
+             SafeAreaEdges="All">
+  <VerticalStackLayout Padding="10,0">
+    <FlexLayout Direction="Row"
+                JustifyContent="SpaceBetween"
+                AlignItems="Center"
+                Margin="15">
+      <Button Text="Update Weight"
+              Command="{Binding NavigateToNewWeightCommand}"
+              Margin="10" />
+    </FlexLayout>
+    <CollectionView ItemsSource="{Binding WeightRecords}">
+      <CollectionView.Header>
+        <Label Text="Weight History"
+               FontSize="Medium"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+      </CollectionView.Header>
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:WeightRecord">
+          <Border Margin="10" Padding="10">
+            <FlexLayout Direction="Row" JustifyContent="SpaceBetween">
+              <VerticalStackLayout>
+                <Label Text="{Binding RecordedAt, StringFormat='Recorded: {0:MMMM d, yyyy h:mm tt}'}"
+                       FontAttributes="Bold"
+                       FontSize="Medium" />
+                <Label>
+                  <Label.FormattedText>
+                    <FormattedString>
+                      <Span Text="Weight: " />
+                      <Span Text="{Binding Pounds}" />
+                      <Span Text=" lbs " />
+                      <Span Text="{Binding Ounces}" />
+                      <Span Text=" oz" />
+                    </FormattedString>
+                  </Label.FormattedText>
+                </Label>
+                <Label Text="{Binding Notes}" />
+              </VerticalStackLayout>
+              <ImageButton Source="delete.png"
+                           Command="{Binding BindingContext.DeleteWeightCommand, Source={x:Reference weightRecordsPage}}"
+                           CommandParameter="{Binding .}"
+                           WidthRequest="44"
+                           HeightRequest="44"
+                           HorizontalOptions="End"
+                           VerticalOptions="Start"
+                           BackgroundColor="Transparent" />
+            </FlexLayout>
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+      <CollectionView.EmptyView>
+        <ContentView>
+          <Label Text="No weight records available"
+                 FontAttributes="Bold"
+                 Margin="0,40,0,0"
+                 HorizontalOptions="Center"
+                 VerticalOptions="End" />
+        </ContentView>
+      </CollectionView.EmptyView>
+    </CollectionView>
+  </VerticalStackLayout>
+</ContentPage>

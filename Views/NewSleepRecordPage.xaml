@@ -6,7 +6,8 @@
              xmlns:models="clr-namespace:CribSheet.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="Add Sleep Record"
-             x:DataType="viewModels:NewSleepRecordViewModel">
+             x:DataType="viewModels:NewSleepRecordViewModel"
+             SafeAreaEdges="All">
   <ContentPage.Resources>
     <ResourceDictionary>
       <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />

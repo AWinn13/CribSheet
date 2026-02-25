@@ -1,8 +1,9 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CribSheet.Data;
 using CribSheet.Models;
 using CribSheet.Services;
+using System.Collections.ObjectModel;
 
 namespace CribSheet.ViewModels
 {
@@ -11,7 +12,6 @@ namespace CribSheet.ViewModels
     #region Fields
 
     private readonly CribSheetDatabase _database;
-    private double weight;
 
     #endregion
 
@@ -21,6 +21,10 @@ namespace CribSheet.ViewModels
       : base(currentBabyService)
     {
       _database = database;
+      BabyEntries = new ObservableCollection<BabyFormEntry>
+      {
+        new BabyFormEntry { Label = "Baby" }
+      };
     }
 
     #endregion
@@ -28,16 +32,47 @@ namespace CribSheet.ViewModels
     #region Properties
 
     [ObservableProperty]
-    private string name = string.Empty;
+    private DateTime birthDate = DateTime.Today;
 
     [ObservableProperty]
-    private DateTime birthDate;
+    private bool isMultiple;
 
     [ObservableProperty]
-    private double lbs;
+    private string? selectedMultipleCount;
+
+    public List<string> MultipleCountOptions { get; } = new()
+    {
+      "Twins",
+      "Triplets",
+      "Quadruplets"
+    };
 
     [ObservableProperty]
-    private double oz;
+    private ObservableCollection<BabyFormEntry> babyEntries;
+
+    #endregion
+
+    #region Property Change Handlers
+
+    partial void OnIsMultipleChanged(bool value)
+    {
+      if (value)
+      {
+        SelectedMultipleCount = MultipleCountOptions[0];
+        UpdateBabyEntries(2);
+      }
+      else
+      {
+        SelectedMultipleCount = null;
+        UpdateBabyEntries(1);
+      }
+    }
+
+    partial void OnSelectedMultipleCountChanged(string? value)
+    {
+      if (value == null) return;
+      UpdateBabyEntries(GetCountFromOption(value));
+    }
 
     #endregion
 
@@ -51,18 +86,24 @@ namespace CribSheet.ViewModels
 
       try
       {
-        var baby = CreateBaby();
-        var result = await _database.AddBabyAsync(baby);
-
-        if (result == 1)
+        if (IsMultiple)
         {
-          await NavigateToHomePage();
+          var group = new BabyGroup { CreatedAt = DateTime.Now };
+          await _database.AddBabyGroupAsync(group);
+
+          foreach (var entry in BabyEntries)
+          {
+            var baby = CreateBabyFromEntry(entry, isAMultiple: true, groupId: group.GroupId);
+            await _database.AddBabyAsync(baby);
+          }
         }
         else
         {
-          await Shell.Current.DisplayAlertAsync("Error",
-            "Failed to add baby to database.", "OK");
+          var baby = CreateBabyFromEntry(BabyEntries[0], isAMultiple: false, groupId: null);
+          await _database.AddBabyAsync(baby);
         }
+
+        await NavigateToHomePage();
       }
       catch (Exception ex)
       {
@@ -75,44 +116,31 @@ namespace CribSheet.ViewModels
 
     #region Validation
 
-    partial void OnNameChanged(string value)
-    {
-      ValidateName(value);
-    }
-
     partial void OnBirthDateChanged(DateTime value)
     {
       ValidateBirthDate(value);
     }
 
-    partial void OnLbsChanged(double value)
-    {
-      ValidateWeight();
-    }
-
-    partial void OnOzChanged(double value)
-    {
-      ValidateWeight();
-    }
-
     private bool ValidateForm()
     {
-      ValidateName(Name);
+      ClearErrors("BabyForm");
       ValidateBirthDate(BirthDate);
-      ValidateWeight();
-      return !HasErrors;
-    }
 
-    private void ValidateName(string value)
-    {
-      if (string.IsNullOrWhiteSpace(value))
+      foreach (var entry in BabyEntries)
       {
-        AddError(nameof(Name), "Name cannot be empty.");
+        if (string.IsNullOrWhiteSpace(entry.Name))
+        {
+          AddError("BabyForm", $"{entry.Label} name cannot be empty.");
+        }
+
+        double totalWeight = (entry.Lbs * 16) + entry.Oz;
+        if (totalWeight <= 0)
+        {
+          AddError("BabyForm", $"{entry.Label} weight must be greater than zero.");
+        }
       }
-      else
-      {
-        ClearErrors(nameof(Name));
-      }
+
+      return !HasErrors;
     }
 
     private void ValidateBirthDate(DateTime value)
@@ -127,33 +155,49 @@ namespace CribSheet.ViewModels
       }
     }
 
-    private void ValidateWeight()
-    {
-      double totalWeight = (Lbs * 16) + Oz;
-      if (totalWeight <= 0)
-      {
-        AddError(nameof(weight), "Weight must be greater than zero.");
-      }
-      else
-      {
-        ClearErrors(nameof(weight));
-      }
-    }
-
     #endregion
 
     #region Private Methods
 
-    private Baby CreateBaby()
+    private Baby CreateBabyFromEntry(BabyFormEntry entry, bool isAMultiple, long? groupId)
     {
       return new Baby
       {
         CreatedAt = DateTime.Now,
         Dob = BirthDate,
-        Name = Name,
-        Weight = (long)((Lbs * 16) + Oz)
+        Name = entry.Name,
+        Weight = (long)((entry.Lbs * 16) + entry.Oz),
+        IsAMultiple = isAMultiple,
+        GroupId = groupId
       };
     }
+
+    private void UpdateBabyEntries(int count)
+    {
+      while (BabyEntries.Count < count)
+      {
+        BabyEntries.Add(new BabyFormEntry { Label = $"Baby {BabyEntries.Count + 1}" });
+      }
+
+      while (BabyEntries.Count > count)
+      {
+        BabyEntries.RemoveAt(BabyEntries.Count - 1);
+      }
+
+      // Re-label all entries so they stay consistent after removal
+      for (int i = 0; i < BabyEntries.Count; i++)
+      {
+        BabyEntries[i].Label = count == 1 ? "Baby" : $"Baby {i + 1}";
+      }
+    }
+
+    private static int GetCountFromOption(string option) => option switch
+    {
+      "Twins" => 2,
+      "Triplets" => 3,
+      "Quadruplets" => 4,
+      _ => 2
+    };
 
     private async Task NavigateToHomePage()
     {

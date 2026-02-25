@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CribSheet.Services;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,6 +81,30 @@ namespace CribSheet.ViewModels
     protected async Task NavigateBack(IDictionary<string, object> parameters)
     {
       await Shell.Current.GoToAsync("..", parameters);
+    }
+
+    [RelayCommand]
+    private async Task NavigateToNewFeeding()
+    {
+      await Shell.Current.GoToAsync(nameof(Views.NewFeedingRecordPage));
+    }
+
+    [RelayCommand]
+    private async Task NavigateToNewPotty()
+    {
+      await Shell.Current.GoToAsync(nameof(Views.NewPottyRecordPage));
+    }
+
+    [RelayCommand]
+    private async Task NavigateToNewSleep()
+    {
+      await Shell.Current.GoToAsync(nameof(Views.NewSleepRecordPage));
+    }
+
+    [RelayCommand]
+    private async Task NavigateToNewWeight()
+    {
+      await Shell.Current.GoToAsync(nameof(Views.NewWeightRecordPage));
     }
 
     #endregion

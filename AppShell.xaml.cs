@@ -17,6 +17,9 @@ namespace CribSheet
       Routing.RegisterRoute(nameof(FeedingRecordsPage), typeof(FeedingRecordsPage));
       Routing.RegisterRoute(nameof(SleepRecordsPage), typeof(SleepRecordsPage));
       Routing.RegisterRoute(nameof(PottyRecordsPage), typeof(PottyRecordsPage));
+      Routing.RegisterRoute(nameof(NewWeightRecordPage), typeof(NewWeightRecordPage));
+      Routing.RegisterRoute(nameof(WeightRecordsPage), typeof(WeightRecordsPage));
+      Routing.RegisterRoute(nameof(AllRecordsPage), typeof(AllRecordsPage));
     }
   }
 }

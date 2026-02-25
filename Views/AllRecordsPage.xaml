@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="CribSheet.Views.AllRecordsPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             xmlns:models="clr-namespace:CribSheet.Models"
+             x:DataType="viewModels:AllRecordsViewModel"
+             x:Name="allRecordsPage"
+             Title="Records"
+             SafeAreaEdges="All">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
+  <Grid RowDefinitions="Auto, *, Auto">
+    <!-- Tab bar -->
+    <CollectionView Grid.Row="0"
+                    ItemsSource="{Binding TabOptions}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding SelectedTab}"
+                    ItemsLayout="HorizontalList"
+                    HorizontalOptions="Fill"
+                    BackgroundColor="{StaticResource Primary}"
+                    HeightRequest="52">
+      <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="x:String">
+          <Border Padding="20,8"
+                  Margin="4,4"
+                  StrokeThickness="0"
+                  StrokeShape="RoundRectangle 8">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup Name="CommonStates">
+                <VisualState Name="Normal">
+                  <VisualState.Setters>
+                    <Setter Property="BackgroundColor"
+                            Value="Transparent" />
+                    <Setter TargetName="tabLabel"
+                            Property="Label.TextColor"
+                            Value="White" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState Name="Selected">
+                  <VisualState.Setters>
+                    <Setter Property="BackgroundColor"
+                            Value="White" />
+                    <Setter TargetName="tabLabel"
+                            Property="Label.TextColor"
+                            Value="{StaticResource Primary}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Label x:Name="tabLabel"
+                   Text="{Binding .}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"
+                   FontSize="Small"
+                   TextColor="White" />
+          </Border>
+        </DataTemplate>
+      </CollectionView.ItemTemplate>
+    </CollectionView>
+    <!-- Content area: 4 CollectionViews in the same cell, toggled by IsVisible -->
+    <Grid Grid.Row="1">
+      <!-- Feeding Records -->
+      <CollectionView ItemsSource="{Binding FeedingRecords}"
+                      IsVisible="{Binding ShowFeeding}">
+        <CollectionView.Header>
+          <Label Text="Feeding Records"
+                 FontSize="Medium"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 Margin="0,10" />
+        </CollectionView.Header>
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:FeedingRecord">
+            <Border Margin="10"
+                    Padding="10">
+              <FlexLayout Direction="Row"
+                          JustifyContent="SpaceBetween">
+                <VerticalStackLayout>
+                  <Label Text="{Binding Time, StringFormat='Feeding Time: {0:MMMM d, yyyy h:mm tt}'}"
+                         FontAttributes="Bold"
+                         FontSize="Medium" />
+                  <Label Text="{Binding AmountMl, StringFormat='Amount: {0} ml'}" />
+                  <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
+                  <Label Text="{Binding DurationMinutes, StringFormat='Duration: {0} minutes'}" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="10">
+                  <ImageButton Source="edit.png"
+                               Command="{Binding BindingContext.EditFeedingCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                  <ImageButton Source="delete.png"
+                               Command="{Binding BindingContext.DeleteFeedingCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                </HorizontalStackLayout>
+              </FlexLayout>
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+          <Grid  RowDefinitions="100,*"
+                 ColumnDefinitions="*">
+            <Label Grid.Row="0"
+                   Text="No Sleep Records Available"
+                   FontAttributes="Bold"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   Margin="10" />
+            <Button Grid.Row="1"
+                    Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewFeedingCommand, Source={x:Reference allRecordsPage}}"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    VerticalOptions="Start" />
+          </Grid>
+        </CollectionView.EmptyView>
+        <CollectionView.Footer>
+          <StackLayout HorizontalOptions="Center"
+                       IsVisible="{Binding FeedingRecords.Count, Converter={StaticResource IntToBoolConverter} }">
+            <Button Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewFeedingCommand, Source={x:Reference allRecordsPage}}" />
+          </StackLayout>
+        </CollectionView.Footer>
+      </CollectionView>
+      <!-- Diaper Records -->
+      <CollectionView ItemsSource="{Binding PottyRecords}"
+                      IsVisible="{Binding ShowDiaper}">
+        <CollectionView.Header>
+          <Label Text="Diaper Records"
+                 FontSize="Medium"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 Margin="0,10" />
+        </CollectionView.Header>
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:PottyRecord">
+            <Border Margin="10"
+                    Padding="10">
+              <FlexLayout Direction="Row"
+                          JustifyContent="SpaceBetween">
+                <VerticalStackLayout>
+                  <Label Text="{Binding Time, StringFormat='Diaper Change: {0:MMMM d, yyyy h:mm tt}'}"
+                         FontAttributes="Bold"
+                         FontSize="Medium" />
+                  <Label Text="{Binding Type, StringFormat='Type: {0}'}" />
+                  <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="10">
+                  <ImageButton Source="edit.png"
+                               Command="{Binding BindingContext.EditPottyCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                  <ImageButton Source="delete.png"
+                               Command="{Binding BindingContext.DeletePottyCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                </HorizontalStackLayout>
+              </FlexLayout>
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+          <Grid  RowDefinitions="100,*"
+                 ColumnDefinitions="*">
+            <Label Grid.Row="0"
+                   Text="No Sleep Records Available"
+                   FontAttributes="Bold"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   Margin="10" />
+            <Button Grid.Row="1"
+                    Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewPottyCommand, Source={x:Reference allRecordsPage}}"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    VerticalOptions="Start" />
+          </Grid>
+        </CollectionView.EmptyView>
+        <CollectionView.Footer>
+          <StackLayout HorizontalOptions="Center"
+                       IsVisible="{Binding PottyRecords.Count, Converter={StaticResource IntToBoolConverter} }">
+            <Button Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewPottyCommand, Source={x:Reference allRecordsPage}}" />
+          </StackLayout>
+        </CollectionView.Footer>
+      </CollectionView>
+      <!-- Sleep Records -->
+      <CollectionView ItemsSource="{Binding SleepRecords}"
+                      IsVisible="{Binding ShowSleep}">
+        <CollectionView.Header>
+          <Label Text="Sleep Records"
+                 FontSize="Medium"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 Margin="0,10" />
+        </CollectionView.Header>
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:SleepRecord">
+            <Border Margin="10"
+                    Padding="10">
+              <FlexLayout Direction="Row"
+                          JustifyContent="SpaceBetween">
+                <VerticalStackLayout>
+                  <Label Text="{Binding StartTime, StringFormat='Started: {0:MMMM d, yyyy h:mm tt}'}"
+                         FontAttributes="Bold"
+                         FontSize="Medium" />
+                  <Label Text="{Binding EndTime, StringFormat='Ended: {0:MMMM d, yyyy h:mm tt}'}" />
+                  <Label Text="{Binding Duration, StringFormat='Duration: {0:hh\\:mm\\:ss}'}" />
+                  <Label Text="{Binding TypeOfSleep, StringFormat='Type: {0}'}" />
+                  <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="10">
+                  <ImageButton Source="edit.png"
+                               Command="{Binding BindingContext.EditSleepCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                  <ImageButton Source="delete.png"
+                               Command="{Binding BindingContext.DeleteSleepCommand, Source={x:Reference allRecordsPage}}"
+                               CommandParameter="{Binding .}"
+                               WidthRequest="44"
+                               HeightRequest="44"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               BackgroundColor="Transparent" />
+                </HorizontalStackLayout>
+              </FlexLayout>
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+          <Grid  RowDefinitions="100,*"
+                 ColumnDefinitions="*">
+            <Label Grid.Row="0"
+                   Text="No Sleep Records Available"
+                   FontAttributes="Bold"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   Margin="10" />
+            <Button Grid.Row="1"
+                    Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewSleepCommand, Source={x:Reference allRecordsPage}}"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    VerticalOptions="Start" />
+          </Grid>
+        </CollectionView.EmptyView>
+        <CollectionView.Footer>
+          <StackLayout HorizontalOptions="Center"
+                       IsVisible="{Binding SleepRecords.Count, Converter={StaticResource IntToBoolConverter} }">
+            <Button Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewSleepCommand, Source={x:Reference allRecordsPage}}" />
+          </StackLayout>
+        </CollectionView.Footer>
+      </CollectionView>
+      <!-- Weight Records -->
+      <CollectionView ItemsSource="{Binding WeightRecords}"
+                      IsVisible="{Binding ShowWeight}">
+        <CollectionView.Header>
+          <Label Text="Weight History"
+                 FontSize="Medium"
+                 FontAttributes="Bold"
+                 HorizontalOptions="Center"
+                 Margin="0,10" />
+        </CollectionView.Header>
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:WeightRecord">
+            <Border Margin="10"
+                    Padding="10">
+              <FlexLayout Direction="Row"
+                          JustifyContent="SpaceBetween">
+                <VerticalStackLayout>
+                  <Label Text="{Binding RecordedAt, StringFormat='Recorded: {0:MMMM d, yyyy h:mm tt}'}"
+                         FontAttributes="Bold"
+                         FontSize="Medium" />
+                  <Label>
+                    <Label.FormattedText>
+                      <FormattedString>
+                        <Span Text="Weight: " />
+                        <Span Text="{Binding Pounds}" />
+                        <Span Text=" lbs " />
+                        <Span Text="{Binding Ounces}" />
+                        <Span Text=" oz" />
+                      </FormattedString>
+                    </Label.FormattedText>
+                  </Label>
+                  <Label Text="{Binding Notes}" />
+                </VerticalStackLayout>
+                <ImageButton Source="delete.png"
+                             Command="{Binding BindingContext.DeleteWeightCommand, Source={x:Reference allRecordsPage}}"
+                             CommandParameter="{Binding .}"
+                             WidthRequest="44"
+                             HeightRequest="44"
+                             HorizontalOptions="End"
+                             VerticalOptions="Start"
+                             BackgroundColor="Transparent" />
+              </FlexLayout>
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.EmptyView>
+          <Grid  RowDefinitions="100,*"
+                 ColumnDefinitions="*">
+            <Label Grid.Row="0"
+                   Text="No Sleep Records Available"
+                   FontAttributes="Bold"
+                   VerticalOptions="End"
+                   HorizontalOptions="Center"
+                   Margin="10" />
+            <Button Grid.Row="1"
+                    Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewWeightCommand, Source={x:Reference allRecordsPage}}"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    VerticalOptions="Start" />
+          </Grid>
+        </CollectionView.EmptyView>
+        <CollectionView.Footer>
+          <StackLayout HorizontalOptions="Center"
+                       IsVisible="{Binding WeightRecords.Count, Converter={StaticResource IntToBoolConverter} }">
+            <Button Text="Add Record"
+                    Command="{Binding BindingContext.NavigateToNewWeightCommand, Source={x:Reference allRecordsPage}}" />
+          </StackLayout>
+        </CollectionView.Footer>
+      </CollectionView>
+    </Grid>
+
+    <!-- Sibling tab bar — pinned to the bottom, only visible for multiples -->
+    <Border Grid.Row="2"
+            IsVisible="{Binding HasMultiples}"
+            BackgroundColor="{StaticResource Primary}"
+            Padding="0,6"
+            StrokeThickness="0">
+      <CollectionView ItemsSource="{Binding GroupBabies}"
+                      SelectionMode="Single"
+                      SelectedItem="{Binding SelectedGroupBaby}"
+                      ItemsLayout="HorizontalList"
+                      HorizontalOptions="Center"
+                      HeightRequest="52">
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:Baby">
+            <Border Padding="20,8"
+                    Margin="4,4"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8">
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="CommonStates">
+                  <VisualState Name="Normal">
+                    <VisualState.Setters>
+                      <Setter Property="BackgroundColor" Value="Transparent" />
+                      <Setter TargetName="siblingTabLabel" Property="Label.TextColor" Value="White" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState Name="Selected">
+                    <VisualState.Setters>
+                      <Setter Property="BackgroundColor" Value="White" />
+                      <Setter TargetName="siblingTabLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+              <Label x:Name="siblingTabLabel"
+                     Text="{Binding Name}"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     FontAttributes="Bold"
+                     FontSize="Small"
+                     TextColor="White" />
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+      </CollectionView>
+    </Border>
+
+  </Grid>
+</ContentPage>

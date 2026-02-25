@@ -6,12 +6,20 @@
              xmlns:models="clr-namespace:CribSheet.Models"
              x:DataType="viewModels:FeedingRecordsViewModel"
              Title="FeedingRecordsPage"
-             x:Name="feedingRecordsPage">
-    <VerticalStackLayout>
-    <Button Text="Export to CSV"
-            Command="{Binding ExportToCsvCommand}"
-            HorizontalOptions="End"
-            Margin="10" />
+             x:Name="feedingRecordsPage"
+             SafeAreaEdges="All">
+  <VerticalStackLayout Padding="10,0">
+    <FlexLayout Direction="Row"
+                JustifyContent="SpaceBetween"
+                AlignItems="Center"
+                Margin="15">
+      <Button Text="Add Feeding Record"
+              Command="{Binding NavigateToNewFeedingCommand}"
+              Margin="10" />
+      <Button Text="Export to CSV"
+              Command="{Binding ExportToCsvCommand}"
+              Margin="10" />
+    </FlexLayout>
     <CollectionView ItemsSource="{Binding FeedingRecords}">
       <CollectionView.Header>
         <Label Text="Feeding Records"
@@ -37,16 +45,16 @@
                 <ImageButton  Source="edit.png"
                               Command="{Binding BindingContext.EditFeedingCommand, Source={x:Reference feedingRecordsPage}}"
                               CommandParameter="{Binding .}"
-                              WidthRequest="30"
-                              HeightRequest="30"
+                              WidthRequest="44"
+                              HeightRequest="44"
                               HorizontalOptions="End"
                               VerticalOptions="Start"
                               BackgroundColor="Transparent" />
                 <ImageButton  Source="delete.png"
                               Command="{Binding BindingContext.DeleteFeedingCommand, Source={x:Reference feedingRecordsPage}}"
                               CommandParameter="{Binding .}"
-                              WidthRequest="30"
-                              HeightRequest="30"
+                              WidthRequest="44"
+                              HeightRequest="44"
                               HorizontalOptions="End"
                               VerticalOptions="Start"
                               BackgroundColor="Transparent" />
@@ -57,7 +65,7 @@
       </CollectionView.ItemTemplate>
       <CollectionView.EmptyView>
         <ContentView>
-          <Label Text="Feeding Records Not avaliable"
+          <Label Text="Feeding Records Not Available"
                  FontAttributes="Bold"
                  Margin="0,40,0,0"
                  HorizontalOptions="Center"

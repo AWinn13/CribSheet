@@ -6,8 +6,17 @@
              xmlns:models="clr-namespace:CribSheet.Models"
              x:DataType="viewModels:PottyRecordsViewModel"
              Title="Diaper Records"
-             x:Name="pottyRecordsPage">
-  <VerticalStackLayout>
+             x:Name="pottyRecordsPage"
+             SafeAreaEdges="All">
+  <VerticalStackLayout Padding="10,0">
+    <FlexLayout Direction="Row"
+                JustifyContent="SpaceBetween"
+                AlignItems="Center"
+                Margin="15">
+      <Button Text="Add Diaper Record"
+              Command="{Binding NavigateToNewPottyCommand}"
+              Margin="10" />
+    </FlexLayout>
     <CollectionView ItemsSource="{Binding PottyRecords}">
       <CollectionView.Header>
         <Label Text="Potty/Diaper Records"
@@ -32,16 +41,16 @@
                 <ImageButton Source="edit.png"
                              Command="{Binding BindingContext.EditPottyCommand, Source={x:Reference pottyRecordsPage}}"
                              CommandParameter="{Binding .}"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="44"
+                             HeightRequest="44"
                              HorizontalOptions="End"
                              VerticalOptions="Start"
                              BackgroundColor="Transparent" />
                 <ImageButton Source="delete.png"
                              Command="{Binding BindingContext.DeletePottyCommand, Source={x:Reference pottyRecordsPage}}"
                              CommandParameter="{Binding .}"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="44"
+                             HeightRequest="44"
                              HorizontalOptions="End"
                              VerticalOptions="Start"
                              BackgroundColor="Transparent" />

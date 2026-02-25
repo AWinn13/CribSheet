@@ -20,6 +20,10 @@ namespace CribSheet.Models
 
     public DateTime? Dob { get; set; } // date only in DB; DateTime works fine
 
+    public bool IsAMultiple { get; set; }
+
+    public long? GroupId { get; set; }
+
     [Ignore]
     public int? Age { get => GetBabyAge(); }
 

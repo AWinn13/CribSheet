@@ -58,6 +58,19 @@ namespace CribSheet.ViewModels
       await Shell.Current.GoToAsync("//AddBabyPage");
     }
 
+    [RelayCommand]
+    private async Task DeleteBaby (Baby baby)
+    {
+      if (baby == null) return;
+      bool confirm = await Shell.Current.DisplayAlertAsync("Confirm Delete",
+        $"Are you sure you want to delete {baby.Name}?", "Yes", "No");
+      if (confirm)
+      {
+        await _database.DeleteBabyAsync(baby);
+        await LoadBabiesAsync();
+      }  
+    }
+
     #endregion
 
     #region Data Methods

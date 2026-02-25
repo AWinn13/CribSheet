@@ -7,131 +7,150 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              Title="CurrentBabyPage"
              x:Name="currentBabyPage"
-             x:DataType="viewModels:CurrentBabyViewModel">
-  <ScrollView>
-    <VerticalStackLayout  HorizontalOptions="Fill"
-                          VerticalOptions="Center"
-                          Spacing="15">
+             x:DataType="viewModels:CurrentBabyViewModel"
+             SafeAreaEdges="All">
+
+  <!-- Row 0: scrollable page content  Row 1: sibling tab bar (pinned, only shown for multiples) -->
+  <Grid RowDefinitions="*, Auto">
+
+    <ScrollView Grid.Row="0">
       <VerticalStackLayout HorizontalOptions="Fill"
                            VerticalOptions="Center"
-                           Spacing="20">
-        <Label Text="{Binding Name}"
-               FontSize="Large"
-               FontAttributes="Bold"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
-        <Label Text="{Binding AgeInMonths, StringFormat='Age: {0} Months'}"
-               FontSize="Medium"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
-        <Label FontSize="Medium"
-               VerticalOptions="Center"
-               HorizontalOptions="Center">
-          <Label.FormattedText>
-            <FormattedString>
-              <Span Text="Weight: " />
-              <Span Text="{Binding Pounds}" />
-              <Span Text=" lbs " />
-              <Span Text="{Binding Ounces}" />
-              <Span Text=" oz" />
-            </FormattedString>
-          </Label.FormattedText>
-        </Label>
-        <Button Text="Edit Baby Info"
-                WidthRequest="200"
-                Command="{Binding EditBabyCommand}"
-                VerticalOptions="Center"
-                HorizontalOptions="Center" />
+                           Spacing="15">
+        <VerticalStackLayout HorizontalOptions="Fill"
+                             VerticalOptions="Center"
+                             Spacing="20">
+          <Label Text="{Binding Name}"
+                 FontSize="Large"
+                 FontAttributes="Bold"
+                 VerticalOptions="Center"
+                 HorizontalOptions="Center" />
+          <Label Text="{Binding AgeInMonths, StringFormat='Age: {0} Months'}"
+                 FontSize="Medium"
+                 VerticalOptions="Center"
+                 HorizontalOptions="Center" />
+          <Label FontSize="Medium"
+                 VerticalOptions="Center"
+                 HorizontalOptions="Center">
+            <Label.FormattedText>
+              <FormattedString>
+                <Span Text="Weight: " />
+                <Span Text="{Binding Pounds}" />
+                <Span Text=" lbs " />
+                <Span Text="{Binding Ounces}" />
+                <Span Text=" oz" />
+              </FormattedString>
+            </Label.FormattedText>
+          </Label>
+          <Button Text="Edit Baby Info"
+                  WidthRequest="200"
+                  Command="{Binding EditBabyCommand}"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center" />
+        </VerticalStackLayout>
+        <!-- Add record buttons -->
+        <Grid ColumnDefinitions="*,*,*,*"
+              ColumnSpacing="5">
+          <Button Text="Add Feeding Record"
+                  ImageSource="pediatrics.png"
+                  ContentLayout="Bottom"
+                  FontAutoScalingEnabled="True"
+                  LineBreakMode="WordWrap"
+                  HorizontalOptions="Fill"
+                  FontSize="Small"
+                  Grid.Column="0"
+                  Command="{Binding NavigateToNewFeedingCommand}"
+                  Margin="5"
+                  HeightRequest="75" />
+          <Button Text="Add Diaper Record"
+                  ImageSource="baby_changing_station.png"
+                  ContentLayout="Bottom"
+                  FontAutoScalingEnabled="True"
+                  LineBreakMode="WordWrap"
+                  HorizontalOptions="Fill"
+                  FontSize="Small"
+                  Grid.Column="1"
+                  Command="{Binding NavigateToNewPottyCommand}"
+                  Margin="5"
+                  HeightRequest="75" />
+          <Button Text="Add Sleep Record"
+                  ImageSource="crib.png"
+                  ContentLayout="Bottom"
+                  FontAutoScalingEnabled="True"
+                  LineBreakMode="WordWrap"
+                  HorizontalOptions="Fill"
+                  FontSize="Small"
+                  Grid.Column="2"
+                  Command="{Binding NavigateToNewSleepCommand}"
+                  Margin="5"
+                  HeightRequest="75" />
+          <Button Text="Update Weight"
+                  ImageSource="scale.png"
+                  ContentLayout="Bottom"
+                  FontAutoScalingEnabled="True"
+                  LineBreakMode="WordWrap"
+                  HorizontalOptions="Fill"
+                  FontSize="Small"
+                  Grid.Column="3"
+                  Command="{Binding NavigateToNewWeightCommand}"
+                  Margin="5"
+                  HeightRequest="75" />
+        </Grid>
+
+        <!-- Combined records button -->
+        <Button Text="View All Records"
+                Command="{Binding NavigateToAllRecordsCommand}"
+                HorizontalOptions="Fill"
+                Margin="10,5" />
       </VerticalStackLayout>
-      <Grid ColumnDefinitions="*,*,*"
-            RowDefinitions="*"
-            ColumnSpacing="5">
-        <Button Text="Feeding Records"
-                ImageSource="pediatrics.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="0"
-                Grid.Row="0"
-                Command="{Binding NavigateToFeedingsCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                IsVisible="{Binding NoFeedingExists, Converter={toolkit:InvertedBoolConverter}}" />
-        <Button Text="Add Feeding Record"
-                ImageSource="pediatrics.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="0"
-                Grid.Row="0"
-                Command="{Binding NavigateToNewFeedingCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                
-                IsVisible="{Binding NoFeedingExists}" />
-        <Button Text="Diaper Records"
-                ImageSource="baby_changing_station.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="1"
-                Grid.Row="0"
-                Command="{Binding NavigateToPottyCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                IsVisible="{Binding NoPottyExists, Converter={toolkit:InvertedBoolConverter}}" />
-        <Button Text="Add Diaper Record"
-                ImageSource="baby_changing_station.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="1"
-                Grid.Row="0"
-                Command="{Binding NavigateToNewPottyCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                IsVisible="{Binding NoPottyExists}" />
-        <Button Text="Sleep Records"
-                ImageSource="crib.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="2"
-                Grid.Row="0"
-                Command="{Binding NavigateToSleepCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                IsVisible="{Binding NoSleepExists, Converter={toolkit:InvertedBoolConverter}}" />
-        <Button Text="Add Sleep Record"
-                ImageSource="crib.png"
-                ContentLayout="Bottom"
-                FontAutoScalingEnabled="True"
-                LineBreakMode="WordWrap"
-                HorizontalOptions="Center"
-                FontSize="Micro"
-                Grid.Column="2"
-                Grid.Row="0"
-                Command="{Binding NavigateToNewSleepCommand}"
-                Margin="10"
-                WidthRequest="150"
-                HeightRequest="100"
-                IsVisible="{Binding NoSleepExists}"/>
-      </Grid>
-    </VerticalStackLayout>
-  </ScrollView>
+    </ScrollView>
+
+    <!-- Sibling tab bar — pinned to the bottom, only visible for multiples -->
+    <Border Grid.Row="1"
+            IsVisible="{Binding HasMultiples}"
+            BackgroundColor="{StaticResource PrimaryDark}"
+            Padding="0,6"
+            StrokeThickness="0">
+      <CollectionView ItemsSource="{Binding GroupBabies}"
+                      SelectionMode="Single"
+                      SelectedItem="{Binding SelectedGroupBaby}"
+                      ItemsLayout="HorizontalList"
+                      HorizontalOptions="Center"
+                      HeightRequest="52">
+        <CollectionView.ItemTemplate>
+          <DataTemplate x:DataType="models:Baby">
+            <Border Padding="20,8"
+                    Margin="4,4"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 8">
+              <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup Name="CommonStates">
+                  <VisualState Name="Normal">
+                    <VisualState.Setters>
+                      <Setter Property="BackgroundColor" Value="Transparent" />
+                      <Setter TargetName="tabLabel" Property="Label.TextColor" Value="White" />
+                    </VisualState.Setters>
+                  </VisualState>
+                  <VisualState Name="Selected">
+                    <VisualState.Setters>
+                      <Setter Property="BackgroundColor" Value="White" />
+                      <Setter TargetName="tabLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                    </VisualState.Setters>
+                  </VisualState>
+                </VisualStateGroup>
+              </VisualStateManager.VisualStateGroups>
+              <Label x:Name="tabLabel"
+                     Text="{Binding Name}"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center"
+                     FontAttributes="Bold"
+                     FontSize="Small"
+                     TextColor="White" />
+            </Border>
+          </DataTemplate>
+        </CollectionView.ItemTemplate>
+      </CollectionView>
+    </Border>
+
+  </Grid>
 </ContentPage>

@@ -62,7 +62,7 @@ namespace CribSheet.ViewModels
       {
         var feedingRecord = CreateFeedingRecord();
         await _database.AddFeedingRecordAsync(feedingRecord);
-        await NavigateBack();
+        await NavigateBack(new Dictionary<string, object> { { "refresh", true } });
       }
       catch (Exception ex)
       {

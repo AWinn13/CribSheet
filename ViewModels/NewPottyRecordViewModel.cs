@@ -56,7 +56,7 @@ namespace CribSheet.ViewModels
       {
         var pottyRecord = CreatePottyRecord();
         await _database.AddPottyRecordAsync(pottyRecord);
-        await NavigateBack();
+        await NavigateBack(new Dictionary<string, object>{ { "refresh", true } });
       }
       catch (Exception ex)
       {

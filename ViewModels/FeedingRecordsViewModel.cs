@@ -26,11 +26,6 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private ObservableCollection<FeedingRecord>? feedingRecords;
 
-    [RelayCommand]
-    private async Task NavigateToNewFeeding()
-    {
-      await Shell.Current.GoToAsync(nameof(Views.NewFeedingRecordPage));
-    }
 
     private async Task LoadBabyDataAsync()
     {

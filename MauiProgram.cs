@@ -49,6 +49,9 @@ namespace CribSheet
       builder.Services.AddTransient<FeedingRecordsViewModel>();
       builder.Services.AddTransient<SleepRecordsViewModel>();
       builder.Services.AddTransient<PottyRecordsViewModel>();
+      builder.Services.AddTransient<NewWeightRecordViewModel>();
+      builder.Services.AddTransient<WeightRecordsViewModel>();
+      builder.Services.AddTransient<AllRecordsViewModel>();
 
       // Register Views
       builder.Services.AddTransient<HomePage>();
@@ -61,6 +64,9 @@ namespace CribSheet
       builder.Services.AddTransient<FeedingRecordsPage>();
       builder.Services.AddTransient<SleepRecordsPage>();
       builder.Services.AddTransient<PottyRecordsPage>();
+      builder.Services.AddTransient<NewWeightRecordPage>();
+      builder.Services.AddTransient<WeightRecordsPage>();
+      builder.Services.AddTransient<AllRecordsPage>();
 
 
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CribSheet.Views.NewWeightRecordPage"
+             xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
+             Title="Update Weight"
+             x:DataType="viewModels:NewWeightRecordViewModel"
+             SafeAreaEdges="All">
+  <ScrollView>
+    <VerticalStackLayout Padding="20" Spacing="10">
+      <Label Text="Update Weight"
+             FontSize="Title"
+             FontAttributes="Bold"
+             HorizontalOptions="Center"
+             Margin="0,0,0,10" />
+
+      <!-- Date and Time -->
+      <Label Text="Date and Time" FontAttributes="Bold" />
+      <FlexLayout Direction="Row" JustifyContent="Start" AlignItems="Center" Margin="10">
+        <DatePicker Date="{Binding RecordedDate}" HorizontalOptions="Fill" Margin="10" />
+        <TimePicker Time="{Binding RecordedTime}" />
+      </FlexLayout>
+
+      <!-- Weight -->
+      <Label Text="Weight" FontAttributes="Bold" />
+      <FlexLayout Direction="Row" JustifyContent="Start" AlignItems="Center" Margin="10">
+        <Entry Placeholder="lbs"
+               Keyboard="Numeric"
+               Text="{Binding Pounds}"
+               WidthRequest="80"
+               Margin="0,0,10,0" />
+        <Label Text="lbs" VerticalOptions="Center" Margin="0,0,15,0" />
+        <Entry Placeholder="oz"
+               Keyboard="Numeric"
+               Text="{Binding Ounces}"
+               WidthRequest="80"
+               Margin="0,0,10,0" />
+        <Label Text="oz" VerticalOptions="Center" />
+      </FlexLayout>
+
+      <!-- Notes -->
+      <Label Text="Notes (Optional)" FontAttributes="Bold" />
+      <Editor Placeholder="Add any notes here..."
+              Text="{Binding Notes}"
+              HeightRequest="100"
+              AutoSize="TextChanges" />
+
+      <!-- Save Button -->
+      <Button Text="Save Weight"
+              Command="{Binding SaveWeightCommand}"
+              BackgroundColor="{StaticResource Primary}"
+              TextColor="White"
+              Margin="0,20,0,0"
+              HeightRequest="50" />
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

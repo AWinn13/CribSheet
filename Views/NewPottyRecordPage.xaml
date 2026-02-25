@@ -5,7 +5,8 @@
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
              Title="Add Diaper Record"
-             x:DataType="viewModels:NewPottyRecordViewModel">
+             x:DataType="viewModels:NewPottyRecordViewModel"
+             SafeAreaEdges="All">
   <ScrollView>
     <VerticalStackLayout Padding="20" Spacing="15">
       <Label Text="New Diaper Record"

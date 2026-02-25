@@ -25,12 +25,6 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private ObservableCollection<SleepRecord>? sleepRecords;
 
-    [RelayCommand]
-    private async Task NavigateToNewSleep()
-    {
-      await Shell.Current.GoToAsync(nameof(Views.NewSleepRecordPage));
-    }
-
     private async Task LoadBabyDataAsync()
     {
       if (CurrentBaby == null) return;
