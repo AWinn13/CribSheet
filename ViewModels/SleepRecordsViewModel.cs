@@ -25,6 +25,9 @@ namespace CribSheet.ViewModels
     [ObservableProperty]
     private ObservableCollection<SleepRecord>? sleepRecords;
 
+    [ObservableProperty]
+    private ObservableCollection<SleepCalendarDay> calendarDays = new();
+
     private async Task LoadBabyDataAsync()
     {
       if (CurrentBaby == null) return;
@@ -32,12 +35,33 @@ namespace CribSheet.ViewModels
       {
         SleepRecords = new ObservableCollection<SleepRecord>(
           await _database.GetSleepRecordsAsync(CurrentBaby.BabyId));
+        BuildCalendarDays();
       }
       catch (Exception ex)
       {
         await Shell.Current.DisplayAlertAsync("Error",
           $"Failed to load sleep data: {ex.Message}", "OK");
       }
+    }
+
+    private void BuildCalendarDays()
+    {
+      if (SleepRecords == null)
+      {
+        CalendarDays = new ObservableCollection<SleepCalendarDay>();
+        return;
+      }
+
+      var grouped = SleepRecords
+        .GroupBy(r => r.StartTime.Date)
+        .OrderByDescending(g => g.Key)
+        .Select(g => new SleepCalendarDay
+        {
+          Date = g.Key,
+          Records = g.OrderBy(r => r.StartTime).ToList()
+        });
+
+      CalendarDays = new ObservableCollection<SleepCalendarDay>(grouped);
     }
 
     [RelayCommand]
@@ -56,6 +80,7 @@ namespace CribSheet.ViewModels
       else
       {
         SleepRecords?.Remove(record);
+        BuildCalendarDays();
       }
     }
 
