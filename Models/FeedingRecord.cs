@@ -25,7 +25,7 @@ namespace CribSheet.Models
 
     public FeedingType Type { get; set; }
 
-    public int? AmountMl { get; set; }
+    public float? AmountMl { get; set; }
     public int? DurationMinutes { get; set; }
 
     public string? Notes { get; set; }

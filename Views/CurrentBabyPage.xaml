@@ -5,26 +5,33 @@
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="CurrentBabyPage"
+             Title="{Binding CurrentBaby.Name, StringFormat='{0}`s page'}"
              x:Name="currentBabyPage"
              x:DataType="viewModels:CurrentBabyViewModel"
              SafeAreaEdges="All">
-
   <!-- Row 0: scrollable page content  Row 1: sibling tab bar (pinned, only shown for multiples) -->
   <Grid RowDefinitions="*, Auto">
-
     <ScrollView Grid.Row="0">
+      
       <VerticalStackLayout HorizontalOptions="Fill"
                            VerticalOptions="Center"
-                           Spacing="15">
+                           Spacing="10">
+        <Button ImageSource="edit.png"
+                Text="Change Baby Info"
+                Command="{Binding EditBabyCommand}"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                BackgroundColor="{StaticResource Primary}"
+                Margin="0, 10, 10, 0"/>
         <VerticalStackLayout HorizontalOptions="Fill"
                              VerticalOptions="Center"
-                             Spacing="20">
+                             Spacing="10">
           <Label Text="{Binding Name}"
-                 FontSize="Large"
-                 FontAttributes="Bold"
-                 VerticalOptions="Center"
-                 HorizontalOptions="Center" />
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+         
           <Label Text="{Binding AgeInMonths, StringFormat='Age: {0} Months'}"
                  FontSize="Medium"
                  VerticalOptions="Center"
@@ -42,15 +49,18 @@
               </FormattedString>
             </Label.FormattedText>
           </Label>
-          <Button Text="Edit Baby Info"
-                  WidthRequest="200"
-                  Command="{Binding EditBabyCommand}"
-                  VerticalOptions="Center"
-                  HorizontalOptions="Center" />
         </VerticalStackLayout>
+      
         <!-- Add record buttons -->
-        <Grid ColumnDefinitions="*,*,*,*"
-              ColumnSpacing="5">
+        <Grid ColumnDefinitions="*,*"
+              RowDefinitions="*, *, *"
+              ColumnSpacing="5"
+              MaximumWidthRequest="500">
+          <Button Text="View All Records"
+                  Command="{Binding NavigateToAllRecordsCommand}"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="0" />
           <Button Text="Add Feeding Record"
                   ImageSource="pediatrics.png"
                   ContentLayout="Bottom"
@@ -59,6 +69,7 @@
                   HorizontalOptions="Fill"
                   FontSize="Small"
                   Grid.Column="0"
+                  Grid.Row="1"
                   Command="{Binding NavigateToNewFeedingCommand}"
                   Margin="5"
                   HeightRequest="75" />
@@ -69,7 +80,8 @@
                   LineBreakMode="WordWrap"
                   HorizontalOptions="Fill"
                   FontSize="Small"
-                  Grid.Column="1"
+                  Grid.Column="0"
+                  Grid.Row="2"
                   Command="{Binding NavigateToNewPottyCommand}"
                   Margin="5"
                   HeightRequest="75" />
@@ -80,7 +92,8 @@
                   LineBreakMode="WordWrap"
                   HorizontalOptions="Fill"
                   FontSize="Small"
-                  Grid.Column="2"
+                  Grid.Column="1"
+                  Grid.Row="1"
                   Command="{Binding NavigateToNewSleepCommand}"
                   Margin="5"
                   HeightRequest="75" />
@@ -91,20 +104,15 @@
                   LineBreakMode="WordWrap"
                   HorizontalOptions="Fill"
                   FontSize="Small"
-                  Grid.Column="3"
+                  Grid.Column="1"
+                  Grid.Row="2"
                   Command="{Binding NavigateToNewWeightCommand}"
                   Margin="5"
                   HeightRequest="75" />
         </Grid>
-
         <!-- Combined records button -->
-        <Button Text="View All Records"
-                Command="{Binding NavigateToAllRecordsCommand}"
-                HorizontalOptions="Fill"
-                Margin="10,5" />
       </VerticalStackLayout>
     </ScrollView>
-
     <!-- Sibling tab bar — pinned to the bottom, only visible for multiples -->
     <Border Grid.Row="1"
             IsVisible="{Binding HasMultiples}"
@@ -127,14 +135,20 @@
                 <VisualStateGroup Name="CommonStates">
                   <VisualState Name="Normal">
                     <VisualState.Setters>
-                      <Setter Property="BackgroundColor" Value="Transparent" />
-                      <Setter TargetName="tabLabel" Property="Label.TextColor" Value="White" />
+                      <Setter Property="BackgroundColor"
+                              Value="Transparent" />
+                      <Setter TargetName="tabLabel"
+                              Property="Label.TextColor"
+                              Value="White" />
                     </VisualState.Setters>
                   </VisualState>
                   <VisualState Name="Selected">
                     <VisualState.Setters>
-                      <Setter Property="BackgroundColor" Value="White" />
-                      <Setter TargetName="tabLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
+                      <Setter Property="BackgroundColor"
+                              Value="White" />
+                      <Setter TargetName="tabLabel"
+                              Property="Label.TextColor"
+                              Value="{StaticResource Primary}" />
                     </VisualState.Setters>
                   </VisualState>
                 </VisualStateGroup>
@@ -151,6 +165,5 @@
         </CollectionView.ItemTemplate>
       </CollectionView>
     </Border>
-
   </Grid>
 </ContentPage>

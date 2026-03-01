@@ -22,14 +22,16 @@
   </Shell.TitleView>-->
   <TabBar>
     <Tab Icon="home.png"
-         Title="Home" IsVisible="True" IsEnabled="True" >
+         Title="Home"
+         IsVisible="True"
+         IsEnabled="True">
       <ShellContent Title="Home"
                     ContentTemplate="{DataTemplate views:HomePage}"
-                    Route="HomePage"  />
+                    Route="HomePage" />
     </Tab>
-    <Tab Icon="note_add.png"
-         Title="Baby's Records">
-      <ShellContent Title="Baby's Records"
+    <Tab Icon="edit.png"
+         Title="Edit Baby">
+      <ShellContent Title="Edit Baby"
                     ContentTemplate="{DataTemplate views:EditBabyPage}"
                     Route="EditBaby" />
     </Tab>
@@ -50,6 +52,12 @@
       <ShellContent Title="Sleep Records"
                     ContentTemplate="{DataTemplate views:SleepRecordsPage}"
                     Route="SleepingingRecords" />
+      <ShellContent Title="Potty Records"
+                    ContentTemplate="{DataTemplate views:PottyRecordsPage}"
+                    Route="PottyRecordsPage" />
+      <ShellContent Title="Weight Records"
+                    ContentTemplate="{DataTemplate views:WeightRecordsPage}"
+                    Route="WeightRecords" />
     </Tab>
   </TabBar>
 </Shell>

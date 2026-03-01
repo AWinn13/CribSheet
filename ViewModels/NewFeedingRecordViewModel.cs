@@ -81,7 +81,7 @@ namespace CribSheet.ViewModels
       FeedingTime = DateTime.Now.TimeOfDay;
 
       FeedingTypes = new ObservableCollection<string>(
-        Enum.GetNames(typeof(FeedingType))
+        Enum.GetNames<FeedingType>()
       );
 
       SelectedFeedingType = FeedingTypes.FirstOrDefault();
@@ -100,12 +100,16 @@ namespace CribSheet.ViewModels
 
     private FeedingRecord CreateFeedingRecord()
     {
+      if(string.IsNullOrWhiteSpace(SelectedFeedingType))
+      {
+        throw new InvalidOperationException("Feeding type is required");
+      }
       return new FeedingRecord
       {
         BabyId = CurrentBabyService.BabyId,
         Time = FeedingDate.Add(FeedingTime),
         Type = Enum.Parse<FeedingType>(SelectedFeedingType),
-        AmountMl = string.IsNullOrWhiteSpace(AmountMl) ? null : int.Parse(AmountMl),
+        AmountMl = string.IsNullOrWhiteSpace(AmountMl) ? null : float.Parse(AmountMl),
         DurationMinutes = string.IsNullOrWhiteSpace(DurationMinutes) ? null : int.Parse(DurationMinutes),
         Notes = Notes
       };

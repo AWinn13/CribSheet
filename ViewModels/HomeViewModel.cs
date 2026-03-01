@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace CribSheet.ViewModels
 {
-  public partial class HomeViewModel : BaseViewModel
+  public partial class HomeViewModel : BaseViewModel, IQueryAttributable
   {
     #region Fields
 
@@ -47,6 +47,15 @@ namespace CribSheet.ViewModels
         }
       }
     }
+    
+
+    async void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+      if (query.ContainsKey("refresh"))
+      {
+        await RefreshBabies();
+      }
+    }
 
     #endregion
 
@@ -55,6 +64,7 @@ namespace CribSheet.ViewModels
     [RelayCommand]
     private static async Task AddNewBaby()
     {
+     
       await Shell.Current.GoToAsync("//AddBabyPage");
     }
 

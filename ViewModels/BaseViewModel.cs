@@ -83,6 +83,11 @@ namespace CribSheet.ViewModels
       await Shell.Current.GoToAsync("..", parameters);
     }
 
+    protected async Task NavigateBackRefresh()
+    {
+      await Shell.Current.GoToAsync("..?refresh=true");
+    }
+
     [RelayCommand]
     private async Task NavigateToNewFeeding()
     {

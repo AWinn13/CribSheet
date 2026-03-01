@@ -16,9 +16,13 @@
                     EmptyView="No Babies added yet, click above to add a baby"
                     SelectionMode="Single"
                     SelectedItem="{Binding SelectedBaby}">
+      <CollectionView.ItemsLayout>
+        <LinearItemsLayout Orientation="Vertical"
+                           ItemSpacing="5" />
+      </CollectionView.ItemsLayout>
       <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:Baby">
-          <Border Margin="10"
+        <DataTemplate x:DataType="models:Baby" >
+          <Border Margin="40"
                   Padding="10"
                   StrokeThickness="1"
                   StrokeShape="RoundRectangle">
@@ -45,10 +49,10 @@
       </CollectionView.ItemTemplate>
     </CollectionView>
     <Button Margin="15"
-            WidthRequest="300"
-            HeightRequest="100"
             Text="Add Baby"
+            ImageSource="add.png"
             FontSize="Medium"
+            HorizontalOptions="Center"
             Command="{Binding AddNewBabyCommand}" />
   </VerticalStackLayout>
 </ContentPage>

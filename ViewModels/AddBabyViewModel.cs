@@ -201,7 +201,7 @@ namespace CribSheet.ViewModels
 
     private async Task NavigateToHomePage()
     {
-      await Shell.Current.GoToAsync("//HomePage");
+      await Shell.Current.GoToAsync("//HomePage", new Dictionary<string, object> { { "refresh", true } });
     }
 
     #endregion
