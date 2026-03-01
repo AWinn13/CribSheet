@@ -4,72 +4,151 @@
              x:Class="CribSheet.Views.SleepRecordsPage"
              xmlns:viewModels="clr-namespace:CribSheet.ViewModels"
              xmlns:models="clr-namespace:CribSheet.Models"
+             xmlns:converters="clr-namespace:CribSheet.Converters"
              x:DataType="viewModels:SleepRecordsViewModel"
              Title="Sleep Records"
              x:Name="sleepRecordsPage"
              SafeAreaEdges="All">
-  <VerticalStackLayout Padding="10,0">
-    <FlexLayout Direction="Row"
-                JustifyContent="SpaceBetween"
-                AlignItems="Center"
-                Margin="15">
-      <Button Text="Add Sleep Record"
-              Command="{Binding NavigateToNewSleepCommand}"
-              Margin="10" />
-    </FlexLayout>
-    <CollectionView ItemsSource="{Binding SleepRecords}">
-      <CollectionView.Header>
-        <Label Text="Sleep Records"
-               FontSize="Medium"
-               FontAttributes="Bold"
-               HorizontalOptions="Center" />
-      </CollectionView.Header>
-      <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:SleepRecord">
-          <Border Margin="10"
-                  Padding="10">
-            <FlexLayout Direction="Row"
-                        JustifyContent="SpaceBetween">
-              <VerticalStackLayout>
-                <Label Text="{Binding StartTime, StringFormat='Started: {0:MMMM d, yyyy h:mm tt}'}"
-                       FontAttributes="Bold"
-                       FontSize="Medium" />
-                <Label Text="{Binding EndTime, StringFormat='Ended: {0:MMMM d, yyyy h:mm tt}'}" />
-                <Label Text="{Binding Duration, StringFormat='Duration: {0:hh\\:mm\\:ss}'}" />
-                <Label Text="{Binding TypeOfSleep, StringFormat='Type: {0}'}" />
-                <Label Text="{Binding Notes, StringFormat='Notes: {0}'}" />
-              </VerticalStackLayout>
-              <HorizontalStackLayout Spacing="10">
-                <ImageButton Source="edit.png"
-                             Command="{Binding BindingContext.EditSleepCommand, Source={x:Reference sleepRecordsPage}}"
-                             CommandParameter="{Binding .}"
-                             WidthRequest="44"
-                             HeightRequest="44"
-                             HorizontalOptions="End"
-                             VerticalOptions="Start"
-                             BackgroundColor="Transparent" />
-                <ImageButton Source="delete.png"
-                             Command="{Binding BindingContext.DeleteSleepCommand, Source={x:Reference sleepRecordsPage}}"
-                             CommandParameter="{Binding .}"
-                             WidthRequest="44"
-                             HeightRequest="44"
-                             HorizontalOptions="End"
-                             VerticalOptions="Start"
-                             BackgroundColor="Transparent" />
-              </HorizontalStackLayout>
-            </FlexLayout>
-          </Border>
-        </DataTemplate>
-      </CollectionView.ItemTemplate>
-      <CollectionView.EmptyView>
-        <ContentView>
-          <Label Text="No Sleep Records Available"
-                 FontAttributes="Bold"
-                 Margin="0,40,0,0"
-                 HorizontalOptions="Center"
-                 VerticalOptions="End" />
-        </ContentView>
-      </CollectionView.EmptyView>
-    </CollectionView>
-  </VerticalStackLayout>
+
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <converters:SleepBlockVerticalBoundsConverter x:Key="SleepBlockVerticalBoundsConverter" />
+      <converters:SleepTypeColorConverter x:Key="SleepTypeColorConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
+
+  <!-- Fixed header rows, scrollable timeline in the last row -->
+  <Grid RowDefinitions="Auto, Auto, Auto, *">
+
+    <!-- Row 0: Add button -->
+    <Button Grid.Row="0"
+            Text="Add Sleep Record"
+            Command="{Binding NavigateToNewSleepCommand}"
+            HorizontalOptions="Start"
+            Margin="15,10,15,4" />
+
+    <!-- Row 1: Day navigation -->
+    <Grid Grid.Row="1"
+          ColumnDefinitions="44, *, 44"
+          Margin="10,0"
+          VerticalOptions="Center">
+      <Button Grid.Column="0"
+              Text="◄"
+              Command="{Binding PreviousDayCommand}"
+              HeightRequest="44" />
+      <Label Grid.Column="1"
+             Text="{Binding SelectedDate, StringFormat='{0:dddd, MMMM d, yyyy}'}"
+             FontAttributes="Bold"
+             FontSize="16"
+             HorizontalOptions="Center"
+             VerticalOptions="Center" />
+      <Button Grid.Column="2"
+              Text="►"
+              Command="{Binding NextDayCommand}"
+              HeightRequest="44" />
+    </Grid>
+
+    <!-- Row 2: Legend -->
+    <HorizontalStackLayout Grid.Row="2"
+                           Spacing="16"
+                           HorizontalOptions="Center"
+                           Margin="0,6,0,4">
+      <HorizontalStackLayout Spacing="5">
+        <BoxView Color="#1A237E"
+                 WidthRequest="14"
+                 HeightRequest="14"
+                 CornerRadius="3"
+                 VerticalOptions="Center" />
+        <Label Text="Night" FontSize="12" VerticalOptions="Center" />
+      </HorizontalStackLayout>
+      <HorizontalStackLayout Spacing="5">
+        <BoxView Color="#42A5F5"
+                 WidthRequest="14"
+                 HeightRequest="14"
+                 CornerRadius="3"
+                 VerticalOptions="Center" />
+        <Label Text="Nap" FontSize="12" VerticalOptions="Center" />
+      </HorizontalStackLayout>
+    </HorizontalStackLayout>
+
+    <!-- Row 3: Vertical 24-hour timeline (scrollable) -->
+    <ScrollView Grid.Row="3">
+      <Grid ColumnDefinitions="52, *"
+            Margin="6,0,6,12">
+
+        <!-- Left column: hour labels (each label is 60px tall = 1 hour) -->
+        <VerticalStackLayout Grid.Column="0"
+                             BindableLayout.ItemsSource="{x:Static viewModels:SleepRecordsViewModel.HourLabels}">
+          <BindableLayout.ItemTemplate>
+            <DataTemplate x:DataType="x:String">
+              <Label Text="{Binding .}"
+                     HeightRequest="60"
+                     VerticalTextAlignment="Start"
+                     HorizontalTextAlignment="End"
+                     FontSize="10"
+                     TextColor="{AppThemeBinding Light=#888888, Dark=#AAAAAA}"
+                     Padding="0,3,6,0" />
+            </DataTemplate>
+          </BindableLayout.ItemTemplate>
+        </VerticalStackLayout>
+
+        <!-- Right column: hour grid lines + sleep blocks overlaid in a Grid -->
+        <Grid Grid.Column="1"
+              HeightRequest="1440">
+
+          <!-- Layer 1: thin horizontal line at the top of each 60 px hour slot -->
+          <VerticalStackLayout InputTransparent="True"
+                               BindableLayout.ItemsSource="{x:Static viewModels:SleepRecordsViewModel.HourLabels}">
+            <BindableLayout.ItemTemplate>
+              <DataTemplate x:DataType="x:String">
+                <BoxView HeightRequest="1"
+                         Margin="0,0,0,59"
+                         HorizontalOptions="Fill"
+                         Color="{AppThemeBinding Light=#C8C8C8, Dark=#505050}" />
+              </DataTemplate>
+            </BindableLayout.ItemTemplate>
+          </VerticalStackLayout>
+
+          <!-- Layer 2: sleep blocks (tappable) -->
+          <AbsoluteLayout HorizontalOptions="Fill"
+                          VerticalOptions="Fill">
+            <BindableLayout.ItemsSource>
+              <Binding Path="DaySleepRecords" />
+            </BindableLayout.ItemsSource>
+            <BindableLayout.ItemTemplate>
+              <DataTemplate x:DataType="models:SleepRecord">
+                <Border CornerRadius="6"
+                        StrokeThickness="0"
+                        BackgroundColor="{Binding TypeOfSleep, Converter={StaticResource SleepTypeColorConverter}}"
+                        AbsoluteLayout.LayoutBounds="{Binding ., Converter={StaticResource SleepBlockVerticalBoundsConverter}}"
+                        AbsoluteLayout.LayoutFlags="XProportional,WidthProportional">
+                  <Border.GestureRecognizers>
+                    <TapGestureRecognizer
+                      Command="{Binding BindingContext.TapSleepCommand, Source={x:Reference sleepRecordsPage}}"
+                      CommandParameter="{Binding .}" />
+                  </Border.GestureRecognizers>
+                  <VerticalStackLayout Padding="6,4"
+                                       Spacing="1">
+                    <Label Text="{Binding TypeOfSleep}"
+                           TextColor="White"
+                           FontSize="12"
+                           FontAttributes="Bold" />
+                    <Label Text="{Binding StartTime, StringFormat='{0:h:mm tt}'}"
+                           TextColor="White"
+                           FontSize="11" />
+                    <Label Text="{Binding Duration, StringFormat='{0:h\\:mm}'}"
+                           TextColor="White"
+                           FontSize="10"
+                           Opacity="0.85" />
+                  </VerticalStackLayout>
+                </Border>
+              </DataTemplate>
+            </BindableLayout.ItemTemplate>
+          </AbsoluteLayout>
+
+        </Grid>
+      </Grid>
+    </ScrollView>
+
+  </Grid>
 </ContentPage>
