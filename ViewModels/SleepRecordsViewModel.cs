@@ -11,6 +11,11 @@ namespace CribSheet.ViewModels
   {
     private readonly CribSheetDatabase _database;
 
+    // 24 hour labels used by the vertical timeline in the view
+    public static IReadOnlyList<string> HourLabels { get; } = Enumerable.Range(0, 24)
+      .Select(h => h == 0 ? "12am" : h < 12 ? $"{h}am" : h == 12 ? "12pm" : $"{h - 12}pm")
+      .ToList();
+
     public SleepRecordsViewModel(CribSheetDatabase database, ICurrentBaby currentBabyService)
       : base(currentBabyService)
     {
@@ -26,7 +31,10 @@ namespace CribSheet.ViewModels
     private ObservableCollection<SleepRecord>? sleepRecords;
 
     [ObservableProperty]
-    private ObservableCollection<SleepCalendarDay> calendarDays = new();
+    private ObservableCollection<SleepRecord> daySleepRecords = new();
+
+    [ObservableProperty]
+    private DateTime selectedDate = DateTime.Today;
 
     private async Task LoadBabyDataAsync()
     {
@@ -35,7 +43,12 @@ namespace CribSheet.ViewModels
       {
         SleepRecords = new ObservableCollection<SleepRecord>(
           await _database.GetSleepRecordsAsync(CurrentBaby.BabyId));
-        BuildCalendarDays();
+
+        // Start on the most recent day that has records, or today
+        if (SleepRecords.Any())
+          SelectedDate = SleepRecords.Max(r => r.StartTime.Date);
+
+        RefreshDayView();
       }
       catch (Exception ex)
       {
@@ -44,24 +57,44 @@ namespace CribSheet.ViewModels
       }
     }
 
-    private void BuildCalendarDays()
+    private void RefreshDayView()
     {
-      if (SleepRecords == null)
-      {
-        CalendarDays = new ObservableCollection<SleepCalendarDay>();
-        return;
-      }
+      DaySleepRecords = new ObservableCollection<SleepRecord>(
+        SleepRecords?
+          .Where(r => r.StartTime.Date == SelectedDate.Date)
+          .OrderBy(r => r.StartTime)
+        ?? Enumerable.Empty<SleepRecord>());
+    }
 
-      var grouped = SleepRecords
-        .GroupBy(r => r.StartTime.Date)
-        .OrderByDescending(g => g.Key)
-        .Select(g => new SleepCalendarDay
-        {
-          Date = g.Key,
-          Records = g.OrderBy(r => r.StartTime).ToList()
-        });
+    [RelayCommand]
+    private void PreviousDay()
+    {
+      SelectedDate = SelectedDate.AddDays(-1);
+      RefreshDayView();
+    }
 
-      CalendarDays = new ObservableCollection<SleepCalendarDay>(grouped);
+    [RelayCommand]
+    private void NextDay()
+    {
+      SelectedDate = SelectedDate.AddDays(1);
+      RefreshDayView();
+    }
+
+    [RelayCommand]
+    private async Task TapSleep(SleepRecord record)
+    {
+      if (record == null) return;
+
+      string title = record.EndTime.HasValue
+        ? $"{record.TypeOfSleep}: {record.StartTime:h:mm tt} – {record.EndTime.Value:h:mm tt}"
+        : $"{record.TypeOfSleep}: {record.StartTime:h:mm tt} (ongoing)";
+
+      string? action = await Shell.Current.DisplayActionSheet(title, "Cancel", "Delete", "Edit");
+
+      if (action == "Delete")
+        await DeleteSleep(record);
+      else if (action == "Edit")
+        await EditSleep(record);
     }
 
     [RelayCommand]
@@ -69,8 +102,9 @@ namespace CribSheet.ViewModels
     {
       if (record == null) return;
 
-      bool checkDelete = await Shell.Current.DisplayAlertAsync("Confirm", "Are you sure you want to delete this sleep record?", "Yes", "Cancel");
-      if (!checkDelete) return;
+      bool confirm = await Shell.Current.DisplayAlertAsync("Confirm",
+        "Are you sure you want to delete this sleep record?", "Yes", "Cancel");
+      if (!confirm) return;
 
       int rowsRemoved = await _database.DeleteSleepRecordAsync(record);
       if (rowsRemoved == 0)
@@ -80,14 +114,13 @@ namespace CribSheet.ViewModels
       else
       {
         SleepRecords?.Remove(record);
-        BuildCalendarDays();
+        RefreshDayView();
       }
     }
 
     [RelayCommand]
     private async Task EditSleep(SleepRecord record)
     {
-      // Placeholder for future edit functionality
       await Shell.Current.DisplayAlertAsync("Info", "Edit functionality coming soon!", "OK");
     }
   }
